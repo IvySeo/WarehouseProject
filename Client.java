@@ -11,20 +11,15 @@ public class Client implements Serializable {
   private String address;
   private String phone;
 
-  //in case client has ID
   private String id;
 
   private static final String CLIENT_STRING = "C";
 
-  private List booksBorrowed = new LinkedList();
-  private List booksOnHold = new LinkedList();
-  private List transactions = new LinkedList();
-
-  public  Client (String name, String address, String phone) {
+  public Client (String name, String address, String phone) {
     this.name = name;
     this.address = address;
     this.phone = phone;
-    id = MEMBER_STRING + (ClientIdServer.instance()).getId();
+    id = CLIENT_STRING + (ClientIdServer.instance()).getId();
   }
 
   public String getName() {
