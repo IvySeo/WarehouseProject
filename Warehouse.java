@@ -1,3 +1,6 @@
+//Author: Noah Coyle
+//Stage 1
+
 import java.util.*;
 import java.io.*;
 public class Warehouse implements Serializable {
@@ -49,6 +52,12 @@ public class Warehouse implements Serializable {
   public void assignProductToManufacturer (String ProductID, String ManufacturerID)
   {
 	(manufacturerList.search(ManufacturerID)).assignProduct(productList.search(ProductID));
+	return;
+  }
+	
+  public void unassignProductFromManufacturer (String ProductID, Manufacturer ManufacturerID)
+  {
+	(manufacturerList.search(ManufacturerID)).unassignProduct(productList.search(ProductID));
 	return;
   }
 
