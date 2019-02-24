@@ -56,6 +56,7 @@ public class Book implements Serializable {
   }
 
   public String toString() {
-      return ("Product ID " + id + " name " + name + " quantity " + quantity + " salesPrice " + salesPrice );
+    String string = "Product ID " + id + " name " + name + " quantity " + quantity + " salesPrice " + salesPrice;
+    return string;  
   }
 }
