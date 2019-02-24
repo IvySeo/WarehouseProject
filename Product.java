@@ -12,9 +12,12 @@ public class Book implements Serializable {
   private float salesPrice;
   private String productID;
 
-
-  public Product(int productID) {
+  //Constructor
+  public Product(int productID, name, quantity, salesPrice) {
     this.productID = productID;
+    this.name = name;
+    this.quantity = quantity;
+    this.salesPrice = salesPrice;
   }
 
 // invokes funcion getProductID()
