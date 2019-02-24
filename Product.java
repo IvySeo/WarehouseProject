@@ -12,6 +12,7 @@ public class Book implements Serializable {
   private float salesPrice;
   private String id;
   
+  private List <Manufacturer> manufacturer = new LinkedList();
   private static final String PRODUCT_STRING = "P";
 
   //Constructor
