@@ -10,7 +10,7 @@ public class Book implements Serializable {
   private String name;
   private int quantity;
   private float salesPrice;
-  private String productID;
+  private String id;
   
   private static final String PRODUCT_STRING = "P";
 
@@ -23,8 +23,8 @@ public class Book implements Serializable {
   }
 
 // invokes funcion getProductID()
-  public int getProductID() { 
-    return productID;
+  public int getId() { 
+    return id;
   }
   
   public String getName() {
@@ -52,10 +52,10 @@ public class Book implements Serializable {
   }
   
   public boolean equals(String id) {
-    return this.productID.equals(id);
+    return this.id.equals(id);
   }
 
   public String toString() {
-      return ("Product ID " + productID + " name " + name + " quantity " + quantity + " salesPrice " + salesPrice );
+      return ("Product ID " + id + " name " + name + " quantity " + quantity + " salesPrice " + salesPrice );
   }
 }
