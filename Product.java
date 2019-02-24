@@ -11,13 +11,15 @@ public class Book implements Serializable {
   private int quantity;
   private float salesPrice;
   private String productID;
+  
+  private static final String PRODUCT_STRING = "P";
 
   //Constructor
-  public Product(int productID, name, quantity, salesPrice) {
-    this.productID = productID;
+  public Product(name, quantity, salesPrice) {
     this.name = name;
     this.quantity = quantity;
     this.salesPrice = salesPrice;
+    productID = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
 
 // invokes funcion getProductID()
@@ -32,9 +34,28 @@ public class Book implements Serializable {
   public int getQuantity() {
     return quantity
   }
+  
+  public float getSalesPrice() {
+    return salesPrice;
+  }
+  
+  public void setName(String newName) {
+    name = newName;
+  }
+  
+  public void setQuantity(int newQuantity) {
+    quantity = newQuantity;
+  }
+  
+  public void setSalesPrice(float newSalesPrice) {
+    salesPrice = newSalesPrice;
+  }
+  
+  public boolean equals(String id) {
+    return this.productID.equals(id);
+  }
 
-// display product ID
   public String toString() {
-      return ("Product ID " + productID);
+      return ("Product ID " + productID + " name " + name + " quantity " + quantity + " salesPrice " + salesPrice );
   }
 }
