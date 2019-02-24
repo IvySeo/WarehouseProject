@@ -46,7 +46,7 @@ public class Warehouse implements Serializable {
     return null;
   }
   
-  public void assignProductToManufacturer (String ProductID, Manufacturer ManufacturerID)
+  public void assignProductToManufacturer (String ProductID, String ManufacturerID)
   {
 	(manufacturerList.search(ManufacturerID)).assignProduct(productList.search(ProductID));
 	return;
