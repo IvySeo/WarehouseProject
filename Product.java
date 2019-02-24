@@ -7,7 +7,10 @@ import java.io.*;
 public class Book implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  private int productID; //product id is an integer
+  private String name;
+  private int quantity;
+  private float salesPrice;
+  private String productID;
 
 
   public Product(int productID) {
@@ -17,6 +20,14 @@ public class Book implements Serializable {
 // invokes funcion getProductID()
   public int getProductID() { 
     return productID;
+  }
+  
+  public String getName() {
+    return name; 
+  }
+  
+  public int getQuantity() {
+    return quantity
   }
 
 // display product ID
