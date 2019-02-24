@@ -49,9 +49,16 @@ public class Warehouse implements Serializable {
     return null;
   }
   
-  public void assignProductToManufacturer (String ProductID, String ManufacturerID)
+  public void assignProductToManufacturer (String productID, String manufacturerID)
   {
-	(manufacturerList.search(ManufacturerID)).assignProduct(productList.search(ProductID));
+	//Check if productID and manufacturerId exists
+	if(manufacturerList.search(productID) == true && productList.search(manufacturerID) == true){
+		
+		//get the product object
+		Product proudct = productList.getProduct(productID);
+		//assign product object to manufacturer
+		manufacturerList.assignProduct(manufacturerID, product);
+	}
 	return;
   }
 	
@@ -98,7 +105,8 @@ public class Warehouse implements Serializable {
       return null;
     }
   }
-  public static  boolean save() {
+	
+  public static boolean save() {
     try {
       FileOutputStream file = new FileOutputStream("WarehouseData");
       ObjectOutputStream output = new ObjectOutputStream(file);
@@ -112,6 +120,7 @@ public class Warehouse implements Serializable {
       return false;
     }
   }
+	
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
@@ -120,6 +129,7 @@ public class Warehouse implements Serializable {
       System.out.println(ioe);
     }
   }
+	
   private void readObject(java.io.ObjectInputStream input) {
     try {
       input.defaultReadObject();
