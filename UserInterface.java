@@ -223,11 +223,11 @@ public class UserInterface{
 	//assignProduct
 	public void assignProduct()
 	{
-		Product pResult;
+		Product result
 		Manufacturer mResult;
-		String id = getToken("Enter Product Id");
-		pResult = 
-		mResult = 
+		String pid = getToken("Enter Product Id");
+		String mid = getToken("Enter Manufacturer Id");
+		result 
 	}
 
 	//unassignProduct
