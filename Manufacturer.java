@@ -13,7 +13,7 @@ public class Manufacturer implements Serializable {
     this.name = name;
     this.address = address;
     this.phone = phone;
-    id = MANUFACTURER_STRING + (MemberIdServer.instance()).getId();
+    id = MANUFACTURER_STRING + (ManufacturerIdServer.instance()).getId();
   }
 
   public String getName() {
