@@ -19,7 +19,7 @@ public class ManufacturerList implements Serializable {
     return true;
   }
 
-  public Iterator getMembers(){
+  public Iterator getManufacturers(){
      return manufacturers.iterator();
   }
   
