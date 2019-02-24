@@ -55,7 +55,7 @@ public class Warehouse implements Serializable {
 	if(manufacturerList.search(productID) == true && productList.search(manufacturerID) == true){
 		
 		//get the product object
-		Product proudct = productList.getProduct(productID);
+		Product product = productList.getProduct(productID);
 		//assign product object to manufacturer
 		manufacturerList.assignProduct(manufacturerID, product);
 	}
