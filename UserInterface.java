@@ -223,7 +223,11 @@ public class UserInterface{
 	//assignProduct
 	public void assignProduct()
 	{
-		System.out.println("Dummy Action");
+		Product pResult;
+		Manufacturer mResult;
+		String id = getToken("Enter Product Id");
+		pResult = 
+		mResult = 
 	}
 
 	//unassignProduct
