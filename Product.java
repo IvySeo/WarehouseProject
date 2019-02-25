@@ -12,7 +12,7 @@ public class Book implements Serializable {
   private float salesPrice;
   private String id;
   
-  private List <Manufacturer> manufacturer = new LinkedList();
+  private List suppliers = new LinkedList()
   private static final String PRODUCT_STRING = "P";
 
   //Constructor
@@ -40,6 +40,7 @@ public class Book implements Serializable {
     return salesPrice;
   }
   
+  
   public void setName(String newName) {
     name = newName;
   }
@@ -50,6 +51,14 @@ public class Book implements Serializable {
   
   public void setSalesPrice(float newSalesPrice) {
     salesPrice = newSalesPrice;
+  }
+  
+  public void assignManufacturer(Manufacturer manufacturer) {
+    suppliers.add(manufacturer);
+  }
+  
+  public void unassignManufacturer(Manufacturer manufactuer) {
+    suppliers.remove(manufacturer);
   }
   
   public boolean equals(String id) {
