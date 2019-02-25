@@ -33,7 +33,7 @@ public class Manufacturer implements Serializable {
   }
   
   public void assignProduct(Product product){
-    productsSupplied = product;
+    productsSupplied = add.(product);
   }
   
   public void unassignProduct(Product product){
