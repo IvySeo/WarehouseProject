@@ -17,6 +17,7 @@ public class Warehouse implements Serializable {
     manufacturerList = manufacturerList.instance();
 	clientListList = clientListList.instance();
   }
+	
   public static Warehouse instance() {
     if (Warehouse == null) {
       ProductIdServer.instance(); // instantiate all singletons
@@ -27,6 +28,7 @@ public class Warehouse implements Serializable {
       return Warehouse;
     }
   }
+	
   public Manufacturer addManufacturer(String Name, String Address, String PhoneNumber) {
     Manufacturer manufacturer = new Manufacturer(Name, Address, PhoneNumber);
     if (manufacturerList.insertManufacturer(manufacturer)) {
@@ -34,6 +36,7 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
+	
   public Client addClient(String name, String address, String phone) {
     Client client = new Client(name, address, phone);
     if (clientList.insertClient(client)) {
@@ -41,6 +44,7 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
+	
   public Product addProduct(String name, int quantity, Double price) {
     Product product = new Product(name, quantity, price);
     if (productList.insertProduct(product)) {
@@ -53,7 +57,7 @@ public class Warehouse implements Serializable {
   {
 	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
 		
-		manufacturer.assignProduct(manufacturerList.search(manufacturerID), productList.search(manufacturerID));
+		manufacturerList.search(manufacturerID).assignProduct(productList.search(productID));
 		return true;
 	}
 	return false;
@@ -63,7 +67,7 @@ public class Warehouse implements Serializable {
   {
 	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
 		
-		manufacturer.unassignProduct(manufacturerList.search(manufacturerID), productList.search(manufacturerID));
+		manufacturerList.search(manufacturerID).unassignProduct(productList.search(productID));
 		return true;
 	}
 	return false;
