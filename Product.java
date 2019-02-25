@@ -4,7 +4,7 @@
 import java.util.*;
 import java.lang.*;
 import java.io.*;
-public class Book implements Serializable {
+public class Product implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private String name;
@@ -59,6 +59,11 @@ public class Book implements Serializable {
   
   public void unassignManufacturer(Manufacturer manufactuer) {
     suppliers.remove(manufacturer);
+  }
+  
+  
+  public Iterator getProviders(){
+   return suppliers.iterator();
   }
   
   public boolean equals(String id) {
