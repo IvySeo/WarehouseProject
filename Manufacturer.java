@@ -37,7 +37,7 @@ public class Manufacturer implements Serializable {
   }
   
   public void unassignProduct(Product product){
-    
+    productSupplied.remove(product);
   }
   
   public void setName(String newName) {
