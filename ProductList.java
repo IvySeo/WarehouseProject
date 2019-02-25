@@ -19,8 +19,23 @@ public class ProductList implements Serializable {
     products.add(product);
     return true;
   }
+  
+   public Product search(String id) {
+    
+    Iterator allProducts = getProducts();
+    while(allProducts.hasNext()){
+        Product product = (Product)(allProducts.next());
+        
+        if(product.getId().equals(id)){
+            return product;
+        }
+    }
+    
+    return null;
+  }
+  
   public Iterator getProducts() {
-    return books.iterator();
+    return products.iterator();
   }
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
