@@ -19,15 +19,27 @@ public class Manufacturer implements Serializable {
   public String getName() {
     return name;
   }
+  
   public String getPhone() {
     return phone;
   }
+  
   public String getAddress() {
     return address;
   }
+  
   public String getId() {
     return id;
   }
+  
+  public void assignProduct(Product product){
+    
+  }
+  
+  public void unassignProduct(Product product){
+  
+  }
+  
   public void setName(String newName) {
     name = newName;
   }
