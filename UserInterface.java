@@ -304,9 +304,9 @@ public class UserInterface{
 	//save
 	private void save() 
 	{
-    		if (library.save()) 
+    		if (warehouse.save()) 
 		{
-      			System.out.println(" The library has been successfully saved in the file LibraryData \n" );
+      			System.out.println(" The warehouse has been successfully saved in the file LibraryData \n" );
     		} 
 		else 
 		{
@@ -319,16 +319,16 @@ public class UserInterface{
 	{
     		try 
 		{
-      			Library tempLibrary = Library.retrieve();
+      			Warehouse tempWarehouse = Warehouse.retrieve();
       			if (tempLibrary != null) 
 			{
-        			System.out.println(" The library has been successfully retrieved from the file LibraryData \n" );
-        			library = tempLibrary;
+        			System.out.println(" The Warehouse has been successfully retrieved from the file WarehouseData \n" );
+        			warehouse = tempWarehouse;
       			} 
 			else 
 			{
         			System.out.println("File doesnt exist; creating new library" );
-        			library = Library.instance();
+        			warehouse = Warehouse.instance();
       			}
     		} 
 		catch(Exception cnfe) 
