@@ -291,15 +291,26 @@ public class UserInterface{
 	//listSuppliersForProduct
 	public void listSuppliersForProduct()
 	{
-		System.out.println("Dummy Action");
+		String id = getToken("Enter Product Id");
+		Iterator result = getSuppliersForProduct(id);
+		
+		while (result.hasNext())
+		{
+			System.out.println(result.next());	
+		}
 	}
 
 	//listProductsWithManufacturer
-	public void listProductsWithManufacturer()
+	public void listProductsForManufacturer()
 	{
-		System.out.println("Dummy Action");
+		String id = getToken("Enter Manufacturer Id");
+		Iterator result = getProductsFromManufacturer(id);
+		
+		while (result.hasNext())
+		{
+			System.out.println(result.next());	
+		}
 	}
-
 
 	//save
 	private void save() 
