@@ -28,6 +28,10 @@ public class Manufacturer implements Serializable {
     return address;
   }
   
+  public Iterator getProvidedProducts(){
+    return productsSupplied.iterator();
+  }
+  
   public String getId() {
     return id;
   }
