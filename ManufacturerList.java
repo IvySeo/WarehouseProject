@@ -22,9 +22,7 @@ public class ManufacturerList implements Serializable {
   public Manufacturer search(String id) {
     
     Iterator allManufacturers = getManufacturers();
-    
     while(allManufacturers.hasNext()){
-      
         Manufacturer manufacturer = (Manufacturer)(allManufacturers.next());
         
         if(manufacturer.getId().equals(id)){
