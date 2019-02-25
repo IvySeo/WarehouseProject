@@ -57,7 +57,7 @@ public class Warehouse implements Serializable {
 		//get the product object
 		Product product = productList.getProduct(productID);
 		//assign product object to manufacturer
-		manufacturerList.assignProduct(manufacturerID, product);
+		manufacturer.assignProduct(manufacturerID, product);
 	}
 	return;
   }
