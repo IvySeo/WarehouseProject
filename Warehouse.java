@@ -57,7 +57,8 @@ public class Warehouse implements Serializable {
   {
 	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
 		
-		manufacturerList.search(manufacturerID).assignProduct(productList.search(productID));
+		(manufacturerList.search(manufacturerID)).assignProduct(productList.search(productID));
+		(productList.search(productID)).assignProduct(manufacturerList.search(manufacturerID));
 		return true;
 	}
 	return false;
@@ -67,7 +68,8 @@ public class Warehouse implements Serializable {
   {
 	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
 		
-		manufacturerList.search(manufacturerID).unassignProduct(productList.search(productID));
+		(manufacturerList.search(manufacturerID)).unassignProduct(productList.search(productID));
+		(productList.search(productID)).assignProduct(manufacturerList.search(manufacturerID));
 		return true;
 	}
 	return false;
