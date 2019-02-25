@@ -88,11 +88,22 @@ public class Warehouse implements Serializable {
   }
   
   public Iterator getSuppliersForProduct(String ProductID){
-	  return (productList.search(ProductID)).getProviders();
+	  
+	  if(productList.search(ProductID)){
+		  return (productList.search(ProductID)).getProviders();
+	  }
+	  
+	  return null;
+	  
   }
   
     public Iterator getProductsFromManufacturer(String ManufacturerID){
-	  return (manufacturerList.search(ManufacturerID)).getProvidedProducts();
+	    
+	  if(manufacturerList.search(ManufacturerID)){
+		  return (manufacturerList.search(ManufacturerID)).getProvidedProducts();
+	  }
+	  
+	    return null;
   }
   
   public static Warehouse retrieve() {
