@@ -224,7 +224,6 @@ public class UserInterface{
 	public void assignProduct()
 	{
 		boolean result;
-		Manufacturer mResult;
 		String pid = getToken("Enter Product Id");
 		String mid = getToken("Enter Manufacturer Id");
 		result = warehouse.assignProductToManufacturer(pid, mid);
@@ -241,7 +240,18 @@ public class UserInterface{
 	//unassignProduct
 	public void unassignProduct()
 	{
-		System.out.println("Dummy Action");
+		boolean result;
+		String pid = getToken("Enter Product Id");
+		String mid = getToken("Enter Manufacturer Id");
+		result = warehouse.unassignProductToManufacturer(pid, mid);
+		
+		if(result == true){
+			System.out.println("SUCCESS");
+		}
+		else
+		{
+			System.out.println("FAILED");	
+		}
 	}
 
 	//listClients
