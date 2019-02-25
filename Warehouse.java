@@ -52,12 +52,9 @@ public class Warehouse implements Serializable {
   public void assignProductToManufacturer (String productID, String manufacturerID)
   {
 	//Check if productID and manufacturerId exists
-	if(manufacturerList.search(productID) == true && productList.search(manufacturerID) == true){
+	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
 		
-		//get the product object
-		Product product = productList.getProduct(productID);
-		//assign product object to manufacturer
-		manufacturer.assignProduct(manufacturerID, product);
+		manufacturer.assignProduct(manufacturerList.search(manufacturerID), productList.search(manufacturerID));
 	}
 	return;
   }
