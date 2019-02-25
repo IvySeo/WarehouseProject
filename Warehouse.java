@@ -49,20 +49,24 @@ public class Warehouse implements Serializable {
     return null;
   }
   
-  public void assignProductToManufacturer (String productID, String manufacturerID)
+  public boolean assignProductToManufacturer (String productID, String manufacturerID)
   {
-	//Check if productID and manufacturerId exists
 	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
 		
 		manufacturer.assignProduct(manufacturerList.search(manufacturerID), productList.search(manufacturerID));
+		return true;
 	}
-	return;
+	return false;
   }
 	
-  public void unassignProductFromManufacturer (String ProductID, Manufacturer ManufacturerID)
+  public boolean unassignProductToManufacturer (String productID, String manufacturerID)
   {
-	(manufacturerList.search(ManufacturerID)).unassignProduct(productList.search(ProductID));
-	return;
+	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
+		
+		manufacturer.unassignProduct(manufacturerList.search(manufacturerID), productList.search(manufacturerID));
+		return true;
+	}
+	return false;
   }
 
   public Iterator getClients() {
