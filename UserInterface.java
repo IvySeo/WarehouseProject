@@ -223,11 +223,19 @@ public class UserInterface{
 	//assignProduct
 	public void assignProduct()
 	{
-		Product result
+		boolean result;
 		Manufacturer mResult;
 		String pid = getToken("Enter Product Id");
 		String mid = getToken("Enter Manufacturer Id");
-		result 
+		result = warehouse.assignProductToManufacturer(pid, mid);
+		
+		if(result == true){
+			System.out.println("SUCCESS");
+		}
+		else
+		{
+			System.out.println("FAILED");	
+		}
 	}
 
 	//unassignProduct
