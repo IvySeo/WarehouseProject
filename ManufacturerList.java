@@ -3,9 +3,10 @@ import java.io.*;
 public class ManufacturerList implements Serializable {
   private static final long serialVersionUID = 1L;
   private List manufacturers = new LinkedList();
-  private static ManufactuererList manufactuererList;
+  private static ManufacturerList manufacturerList;
   private ManufacturerList() {
   }
+  
   public static ManufacturerList instance() {
     if (manufacturerList == null) {
       return (manufacturerList = new ManufacturerList());
@@ -15,12 +16,11 @@ public class ManufacturerList implements Serializable {
   }
 
   public boolean insertManufacturer(Manufacturer manufacturer) {
-    manufacturer.add(manufacturer);
+    manufacturers.add(manufacturer);
     return true;
   }
   
   public Manufacturer search(String id) {
-    
     Iterator allManufacturers = getManufacturers();
     while(allManufacturers.hasNext()){
         Manufacturer manufacturer = (Manufacturer)(allManufacturers.next());
@@ -51,7 +51,7 @@ public class ManufacturerList implements Serializable {
         return;
       } else {
         input.defaultReadObject();
-        if (mmanufacturerList == null) {
+        if (manufacturerList == null) {
           manufacturerList = (ManufacturerList) input.readObject();
         } else {
           input.readObject();

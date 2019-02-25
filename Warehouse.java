@@ -15,24 +15,24 @@ public class Warehouse implements Serializable {
   private Warehouse() {
     productList = productList.instance();
     manufacturerList = manufacturerList.instance();
-	clientListList = clientListList.instance();
+	clientList = clientList.instance();
   }
 	
   public static Warehouse instance() {
-    if (Warehouse == null) {
+    if (warehouse == null) {
       ProductIdServer.instance(); // instantiate all singletons
 	  ClientIdServer.instance(); 
 	  ManufacturerIdServer.instance(); 
-      return (Warehouse = new Warehouse());
+      return (warehouse = new Warehouse());
     } else {
-      return Warehouse;
+      return warehouse;
     }
   }
 	
   public Manufacturer addManufacturer(String Name, String Address, String PhoneNumber) {
     Manufacturer manufacturer = new Manufacturer(Name, Address, PhoneNumber);
     if (manufacturerList.insertManufacturer(manufacturer)) {
-      return (Manufacturer);
+      return (manufacturer);
     }
     return null;
   }
@@ -45,7 +45,7 @@ public class Warehouse implements Serializable {
     return null;
   }
 	
-  public Product addProduct(String name, int quantity, Double price) {
+  public Product addProduct(String name, int quantity, float price) {
     Product product = new Product(name, quantity, price);
     if (productList.insertProduct(product)) {
       return (product);
@@ -55,10 +55,10 @@ public class Warehouse implements Serializable {
   
   public boolean assignProductToManufacturer (String productID, String manufacturerID)
   {
-	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
+	if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
 		
 		(manufacturerList.search(manufacturerID)).assignProduct(productList.search(productID));
-		(productList.search(productID)).assignProduct(manufacturerList.search(manufacturerID));
+		(productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
 		return true;
 	}
 	return false;
@@ -66,10 +66,10 @@ public class Warehouse implements Serializable {
 	
   public boolean unassignProductToManufacturer (String productID, String manufacturerID)
   {
-	if(manufacturerList.search(manufacturerID) && productList.search(productID)){
+	if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
 		
 		(manufacturerList.search(manufacturerID)).unassignProduct(productList.search(productID));
-		(productList.search(productID)).assignProduct(manufacturerList.search(manufacturerID));
+		(productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
 		return true;
 	}
 	return false;
@@ -89,7 +89,7 @@ public class Warehouse implements Serializable {
   
   public Iterator getSuppliersForProduct(String ProductID){
 	  
-	  if(productList.search(ProductID)){
+	  if(productList.search(ProductID) != null){
 		  return (productList.search(ProductID)).getProviders();
 	  }
 	  
@@ -99,7 +99,7 @@ public class Warehouse implements Serializable {
   
     public Iterator getProductsFromManufacturer(String ManufacturerID){
 	    
-	  if(manufacturerList.search(ManufacturerID)){
+	  if(manufacturerList.search(ManufacturerID) != null){
 		  return (manufacturerList.search(ManufacturerID)).getProvidedProducts();
 	  }
 	  
@@ -111,10 +111,10 @@ public class Warehouse implements Serializable {
       FileInputStream file = new FileInputStream("WarehouseData");
       ObjectInputStream input = new ObjectInputStream(file);
       input.readObject();
-      productList.retrieve(input);
-	  manufacturerList.retrieve(input);
-	  clientList.retrieve(input);
-      return Warehouse;
+      ProductIdServer.retrieve(input);
+	  ManufacturerIdServer.retrieve(input);
+	  ClientIdServer.retrieve(input);
+      return warehouse;
     } catch(IOException ioe) {
       ioe.printStackTrace();
       return null;
@@ -128,10 +128,10 @@ public class Warehouse implements Serializable {
     try {
       FileOutputStream file = new FileOutputStream("WarehouseData");
       ObjectOutputStream output = new ObjectOutputStream(file);
-      output.writeObject(Warehouse);
-      output.writeObject(productList.instance());
-	  output.writeObject(manufacturerList.instance());
-	  output.writeObject(clientList.instance());
+      output.writeObject(warehouse);
+      output.writeObject(ProductIdServer.instance());
+	  output.writeObject(ManufacturerIdServer.instance());
+	  output.writeObject(ClientIdServer.instance());
       return true;
     } catch(IOException ioe) {
       ioe.printStackTrace();
@@ -142,7 +142,7 @@ public class Warehouse implements Serializable {
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
-      output.writeObject(Warehouse);
+      output.writeObject(warehouse);
     } catch(IOException ioe) {
       System.out.println(ioe);
     }
@@ -151,8 +151,8 @@ public class Warehouse implements Serializable {
   private void readObject(java.io.ObjectInputStream input) {
     try {
       input.defaultReadObject();
-      if (Warehouse == null) {
-        Warehouse = (Warehouse) input.readObject();
+      if (warehouse == null) {
+        warehouse = (Warehouse) input.readObject();
       } else {
         input.readObject();
       }

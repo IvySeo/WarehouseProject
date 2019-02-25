@@ -14,33 +14,33 @@ public class ProductList implements Serializable {
       return productList;
     }
   }
-  
+
   public boolean insertProduct(Product product) {
     products.add(product);
     return true;
   }
-  
+
    public Product search(String id) {
-    
+
     Iterator allProducts = getProducts();
     while(allProducts.hasNext()){
         Product product = (Product)(allProducts.next());
-        
+
         if(product.getId().equals(id)){
             return product;
         }
     }
-    
+
     return null;
   }
-  
+
   public Iterator getProducts() {
     return products.iterator();
   }
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
-      output.writeObject(catalog);
+      output.writeObject(productList);
     } catch(IOException ioe) {
       System.out.println(ioe);
     }
@@ -63,7 +63,8 @@ public class ProductList implements Serializable {
       cnfe.printStackTrace();
     }
   }
+  
   public String toString() {
-    return books.toString();
+    return products.toString();
   }
 }

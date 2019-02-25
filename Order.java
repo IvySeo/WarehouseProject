@@ -4,12 +4,13 @@ public class Order implements Serializable {
   private String date;
   private Double totalCost;
   private Client orderingClient;
+  private String id;
   private static final String ORDER_STRING = "O";
   private List productsInOrder = new LinkedList();
-  public  Order (String name, String address, String phone) {
-    this.name = name;
-    this.address = address;
-    this.phone = phone;
+  public  Order (String date, Double totalCost, Client c) {
+    this.date = date;
+    this.totalCost = totalCost;
+    this.orderingClient = c;
     id = ORDER_STRING + (OrderIdServer.instance()).getId();
   }
 
@@ -36,8 +37,9 @@ public class Order implements Serializable {
   public boolean equals(String id) {
     return this.id.equals(id);
   }
+  
   public String toString() {
-    String string = "Member name " + name + " address " + address + " id " + id + "phone " + phone;
+    String string = "Dummy Action";
     return string;
   }
 }

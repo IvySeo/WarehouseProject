@@ -12,19 +12,19 @@ public class Product implements Serializable {
   private float salesPrice;
   private String id;
   
-  private List suppliers = new LinkedList()
+  private List suppliers = new LinkedList();
   private static final String PRODUCT_STRING = "P";
 
   //Constructor
-  public Product(name, quantity, salesPrice) {
+  public Product(String name, int quantity, float salesPrice) {
     this.name = name;
     this.quantity = quantity;
     this.salesPrice = salesPrice;
-    productID = PRODUCT_STRING + (ProductIdServer.instance()).getId();
+    id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
 
 // invokes funcion getProductID()
-  public int getId() { 
+  public String getId() { 
     return id;
   }
   
@@ -33,7 +33,7 @@ public class Product implements Serializable {
   }
   
   public int getQuantity() {
-    return quantity
+    return quantity;
   }
   
   public float getSalesPrice() {
@@ -57,7 +57,7 @@ public class Product implements Serializable {
     suppliers.add(manufacturer);
   }
   
-  public void unassignManufacturer(Manufacturer manufactuer) {
+  public void unassignManufacturer(Manufacturer manufacturer) {
     suppliers.remove(manufacturer);
   }
   

@@ -14,16 +14,16 @@ public class ClientList implements Serializable {
   }
 
   public static ClientList instance() {
-    if (ClientList == null) {
-      return (ClientList = new ClientList());
+    if (clientList == null) {
+      return (clientList = new ClientList());
     } 
     else {
       return clientList;
     }
   }
 
-  public boolean addClient(Client client) {
-    clinet.add(client);
+  public boolean insertClient(Client client) {
+    clients.add(client);
     return true;
   }
 
