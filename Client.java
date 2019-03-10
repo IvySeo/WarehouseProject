@@ -1,19 +1,25 @@
-// author: Ivy Seo 
-// stage 1
+// author: Ivy
+// state: final
 
+// imports
+import java.io.Serializable;
 import java.util.*;
 import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 public class Client implements Serializable {
   private static final long serialVersionUID = 1L;
+  private static final String CLIENT_STRING = "C";
 
   private String name;
   private String address;
   private String phone;
 
   private String id;
-
-  private static final String CLIENT_STRING = "C";
 
   public Client (String name, String address, String phone) {
     this.name = name;
@@ -22,6 +28,7 @@ public class Client implements Serializable {
     id = CLIENT_STRING + (ClientIdServer.instance()).getId();
   }
 
+// get and set - basic functions
   public String getName() {
     return name;
   }
@@ -43,11 +50,52 @@ public class Client implements Serializable {
   public void setPhone(String newPhone) {
     phone = newPhone;
   }
+
+// boolean - if id is equal or not
   public boolean equals(String id) {
     return this.id.equals(id);
   }
+
+// display the information
   public String toString() {
-    String string = "Client name " + name + " address " + address + " id " + id + "phone " + phone;
+    String string = "Client name: " + name + " address: " + address + " id: " + id + " phone: " + phone;
     return string;
   }
+
+// add client to Client list
+private void insertClient() {
+    Client client = ClientList.insertClient();
+        if (client == null) {
+            System.out.println("Cannot add a client.");
+        }
+        else {
+            System.out.println("Client " + client + " was added successfully.");
+        }
+    }
+
+// list client from client list
+private void listClients() {
+    Iterator clients = ClientList.getClient();
+
+        while (ClientList.hasNext()) {
+            System.out.println(ClientList.next());
+        }
+    }
+// list client with balance
+private void listClientsWithBalance() {
+    Iterator clients = ClientList.getClient();
+	Client client = new Client();
+    	while(clients.hasNext()) {
+    		client = (Client) clients.next();
+    		if(Invoice.getBalance() > 0) {
+    			System.out.println("Client name: " + client.getName() 
+    					+ " has a balance of: " 
+    					+ Invoice.getBalance());
+    		}
+            else{
+                System.out.println("Has no balance information");
+            }
+    	}
+    }
+
 }
