@@ -1,6 +1,6 @@
-// author: Ivy Seo 
-// stage 1
-
+// author: Ivy
+// state: final
+import java.io.Serializable;
 import java.util.*;
 import java.io.*;
 
@@ -23,11 +23,10 @@ public class ClientList implements Serializable {
   }
 
   public boolean insertClient(Client client) {
-    clients.add(client);
-    return true;
+    return clients.add(client);
   }
 
-  public Iterator getClients(){
+  public Iterator getClient(){
      return clients.iterator();
   }
   
