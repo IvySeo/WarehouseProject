@@ -4,21 +4,22 @@
 import java.util.*;
 import java.io.*;
 public class Order implements Serializable {
-  private String date;
-  private Double totalCost;
-  private Client orderingClient;
+  private static final long serialVersionUID = 1L;
   private String id;
-  private static final String ORDER_STRING = "O";
-  private List productsInOrder = new LinkedList();
-  public  Order (String date, Double totalCost, Client c) {
-    this.date = date;
-    this.totalCost = totalCost;
-    this.orderingClient = c;
+  private Client client;
+  private List orderedProducts = new LinkedList();
+  private static final String ORDER_STRING = "I";
+  private totalCost;
+  
+  
+  public Order(Client c){
+    this.client = c;
     id = ORDER_STRING + (OrderIdServer.instance()).getId();
   }
-
-  public String getDate() {
-    return date;
+  
+  public void addProduct(Product p, int quantity){
+    p.setQuantity(quantity);
+    orderedProducts.add(p);
   }
 
   public Double getTotalCost() {
@@ -32,7 +33,7 @@ public class Order implements Serializable {
   public List getProductsInOrder() {
     return productsInOrder;
   }
-	
+    
   public void setDate (String newDate) {
     date = newDate;
   }
