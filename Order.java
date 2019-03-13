@@ -1,3 +1,5 @@
+//Author: Noah Coyle
+//Stage 1
 
 import java.util.*;
 import java.io.*;
@@ -8,7 +10,6 @@ public class Order implements Serializable {
   private String id;
   private static final String ORDER_STRING = "O";
   private List productsInOrder = new LinkedList();
-  private List manufacturersForOrder = new LinkedList();
   public  Order (String date, Double totalCost, Client c) {
     this.date = date;
     this.totalCost = totalCost;
@@ -31,8 +32,6 @@ public class Order implements Serializable {
   public List getProductsInOrder() {
     return productsInOrder;
   }
-
-  public List getManufacturersForOrder() { return manufacturersForOrder; }
 	
   public void setDate (String newDate) {
     date = newDate;
