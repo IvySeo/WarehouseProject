@@ -1,13 +1,18 @@
+//Author: Vachia Thoj
+//Stage 1
+
 import java.util.*;
 import java.text.*;
 import java.io.*;
 
 public class UserInterface{
-    
+
     private static UserInterface userInterface;
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
     private static final int EXIT = 0;
+
+	//***** STAGE 1 OPEARTIONS *****
     private static final int ADD_CLIENT = 1;
     private static final int ADD_MANUFACTURER = 2;
     private static final int ADD_PRODUCTS = 3;
@@ -17,11 +22,22 @@ public class UserInterface{
     private static final int LIST_MANUFACTURERS = 7;
     private static final int LIST_PRODUCTS = 8;
     private static final int LIST_SUPPLIERS_FOR_PRODUCT = 9;
-    private static final int LIST_PRODUCTS_WITH_MANUFACTURER = 10;
-    private static final int SAVE = 11;
-    private static final int RETRIEVE = 12;
-    private static final int HELP = 13;
-    
+    private static final int LIST_PRODUCTS_FOR_MANUFACTURER = 10;
+
+	//***** STAGE 2 & 3 OPERATIONS *****
+	private static final int ADD_AND_PROCESS_ORDER = 11;
+	private static final int PLACE_ORDER_WITH_MANUFACTURER = 12;
+	private static final int ACCEPT_CLIENT_PAYMENT = 13;
+	private static final int RECEIVE_SHIPMENT = 14;
+	private static final int LIST_CLIENTS_WITH_OUTSTANDING_BALANCE = 15;
+	private static final int LIST_WAITLISTED_ORDERS_FOR_PRODUCT = 16;
+	private static final int LIST_WAITLISTED_ORDERS_FOR_CLIENT = 17;
+	private static final int LIST_ORDERS_PLACED_WITH_MANUFACTURER = 18;
+
+	private static final int SAVE = 19;
+    private static final int RETRIEVE = 20;
+    private static final int HELP = 21;
+
     private UserInterface()
     {
         if(yesOrNo("Look for saved data and use it?"))
@@ -36,132 +52,158 @@ public class UserInterface{
 
     public static UserInterface instance()
     {
-            if (userInterface == null) 
+        if (userInterface == null)
         {
-                return userInterface = new UserInterface();
-            } 
-        else 
+            return userInterface = new UserInterface();
+        }
+        else
         {
-                return userInterface;
-            }
+            return userInterface;
+        }
     }
 
     //getToken
-    public String getToken(String prompt) 
+    public String getToken(String prompt)
     {
-            do {
-                try
+        do {
+            try
             {
-                    System.out.println(prompt);
-                    String line = reader.readLine();
-                    StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-                    
-                if (tokenizer.hasMoreTokens()) 
+                System.out.println(prompt);
+                String line = reader.readLine();
+                StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
+
+                if (tokenizer.hasMoreTokens())
                 {
-                        return tokenizer.nextToken();
-                    }
-
-                } 
-            catch(IOException ioe) 
-            {
-                    System.exit(0);
+                    return tokenizer.nextToken();
                 }
-
-            } while (true);
+            }
+            catch(IOException ioe)
+            {
+                System.exit(0);
+            }
+        } while (true);
     }
 
     //yesOrNo
-    private boolean yesOrNo(String prompt) 
+    private boolean yesOrNo(String prompt)
     {
-            String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-            if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') 
+        String more = getToken(prompt + " (Y|y)[es] or anything else for no");
+        if (more.charAt(0) != 'y' && more.charAt(0) != 'Y')
         {
-                return false;
-            }
-
-            return true;
+            return false;
+        }
+        return true;
     }
 
     //getNumber
-    public int getNumber(String prompt) 
+    public int getNumber(String prompt)
     {
-            do {
-                try 
+        do {
+            try
             {
-                    String item = getToken(prompt);
-                    Integer num = Integer.valueOf(item);
-                    return num.intValue();
-                } 
-            catch (NumberFormatException nfe) 
+                String item = getToken(prompt);
+                Integer num = Integer.valueOf(item);
+                return num.intValue();
+            }
+            catch (NumberFormatException nfe)
             {
-                    System.out.println("Please input a number ");
-                }
-            } while (true);
+                System.out.println("Please input a number ");
+            }
+        } while (true);
+    }
+
+    public float getFloat(String prompt)
+    {
+        do {
+            try
+            {
+                String item = getToken(prompt);
+                Float decimal = Float.valueOf(item);
+                return decimal.floatValue();
+            }
+            catch (NumberFormatException nfe)
+            {
+                System.out.println("Please input a number ");
+            }
+        } while (true);
     }
 
     //getDate
-    public Calendar getDate(String prompt) 
+    public Calendar getDate(String prompt)
     {
-            do {
-                try 
+        do {
+            try
             {
-                    Calendar date = new GregorianCalendar();
-                    String item = getToken(prompt);
-                    DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
-                    date.setTime(df.parse(item));
-                    return date;
-                } 
-            catch (Exception fe) 
+               Calendar date = new GregorianCalendar();
+               String item = getToken(prompt);
+               DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
+               date.setTime(df.parse(item));
+               return date;
+            }
+            catch (Exception fe)
             {
-                    System.out.println("Please input a date as mm/dd/yy");
-                }
-            } while (true);
+                System.out.println("Please input a date as mm/dd/yy");
+            }
+        } while (true);
     }
 
     //getCommand
-    public int getCommand() 
+    public int getCommand()
     {
-            do {
-                try 
+        do {
+            try
             {
-                    int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-                    if (value >= EXIT && value <= HELP) 
+                System.out.println();
+                int value = Integer.parseInt(getToken("Enter command: " + HELP + " for help"));
+                if (value >= EXIT && value <= HELP)
                 {
-                        return value;
-                    }
-                } 
-            catch (NumberFormatException nfe) 
-            {
-                    System.out.println("Enter a number");
+                    return value;
                 }
-            } while (true);
+                }
+            catch (NumberFormatException nfe)
+            {
+                System.out.println("Enter a number");
+            }
+        } while (true);
     }
 
-    
+
     //help
-    public void help() 
+    public void help()
     {
-            System.out.println("Enter a number between 0 and 13 as explained below:");
-            System.out.println(EXIT + " to Exit\n");
-            System.out.println(ADD_CLIENT + " to add a client");
-            System.out.println(ADD_MANUFACTURER + " to a add manufacturer");
-            System.out.println(ADD_PRODUCTS + " to add products");
-            System.out.println(ASSIGN_PRODUCT + " to  assign manufacturer to a product ");
-            System.out.println(UNASSIGN_PRODUCT + " to unassign manufacturer from a product ");
-            System.out.println(LIST_CLIENTS + " to print list of clients");
-            System.out.println(LIST_MANUFACTURERS + " to print list of manufacturers");
-            System.out.println(LIST_PRODUCTS + " to print list of products");
-            System.out.println(LIST_SUPPLIERS_FOR_PRODUCT + " to print list of suppliers for a specifc product");
-            System.out.println(LIST_PRODUCTS_WITH_MANUFACTURER + " to print list of products and manufacturers who supply each product");
-            System.out.println(SAVE + " to  save data");
-            System.out.println(RETRIEVE + " to  retrieve");
-            System.out.println(HELP + " for help");
+        System.out.println("Enter a number between 0 and 13 as explained below:");
+        System.out.println(EXIT + " to Exit\n");
+
+		// ***** STAGE 1 OPERATIONS *****
+		System.out.println(ADD_CLIENT + " to add a client");
+        System.out.println(ADD_MANUFACTURER + " to a add manufacturer");
+        System.out.println(ADD_PRODUCTS + " to add products");
+        System.out.println(ASSIGN_PRODUCT + " to assign manufacturer to a product ");
+        System.out.println(UNASSIGN_PRODUCT + " to unassign manufacturer from a product ");
+        System.out.println(LIST_CLIENTS + " to print list of clients");
+        System.out.println(LIST_MANUFACTURERS + " to print list of manufacturers");
+        System.out.println(LIST_PRODUCTS + " to print list of products");
+        System.out.println(LIST_SUPPLIERS_FOR_PRODUCT + " to print list of suppliers for a specifc product");
+        System.out.println(LIST_PRODUCTS_FOR_MANUFACTURER + " to print list of products for a manufacturer who supply each product");
+
+		// ***** STAGE 2 & 3 OPERATIONS *****
+		System.out.println(ADD_AND_PROCESS_ORDER + " to add and process an order");
+		System.out.println(PLACE_ORDER_WITH_MANUFACTURER + " to place an order with a manufacturer");
+		System.out.println(ACCEPT_CLIENT_PAYMENT + " to accept payment from a client");
+		System.out.println(RECEIVE_SHIPMENT + " to receive a shipment");
+		System.out.println(LIST_CLIENTS_WITH_OUTSTANDING_BALANCE + " to print list of clients with an oustanding balance");
+		System.out.println(LIST_WAITLISTED_ORDERS_FOR_PRODUCT + " to print list of waitlisted orders for a product");
+		System.out.println(LIST_WAITLISTED_ORDERS_FOR_CLIENT + " to print list of waitlisted orders for a client");
+		System.out.println(LIST_ORDERS_PLACED_WITH_MANUFACTURER + " to print list of orders placed with manufacturer");
+
+		System.out.println(SAVE + " to save data");
+        System.out.println(RETRIEVE + " to retrieve");
+        System.out.println(HELP + " for help");
     }
 
     //addClient
     public void addClient()
     {
-
         String name = getToken("Enter client name");
         String address = getToken("Enter address");
         String phone = getToken("Enter phone");
@@ -201,9 +243,9 @@ public class UserInterface{
         do{
             String name = getToken("Enter product name");
             int quantity = getNumber("Enter in quantity");
-            float price = getNumber("Enter in price");
+            float price = getFloat("Enter in price");
             result = warehouse.addProduct(name, quantity, price);
-            
+
             if(result != null)
             {
                 System.out.println(result);
@@ -227,13 +269,13 @@ public class UserInterface{
         String pid = getToken("Enter Product Id");
         String mid = getToken("Enter Manufacturer Id");
         result = warehouse.assignProductToManufacturer(pid, mid);
-        
+
         if(result == true){
-            System.out.println("SUCCESS");
+            System.out.println("SUCCESS: Assigned product to manufacturer ");
         }
         else
         {
-            System.out.println("FAILED");   
+            System.out.println("FAILED to assign product");
         }
     }
 
@@ -244,13 +286,13 @@ public class UserInterface{
         String pid = getToken("Enter Product Id");
         String mid = getToken("Enter Manufacturer Id");
         result = warehouse.unassignProductToManufacturer(pid, mid);
-        
+
         if(result == true){
-            System.out.println("SUCCESS");
+            System.out.println("SUCCESS: unassigned product to manufacturer");
         }
         else
         {
-            System.out.println("FAILED");   
+            System.out.println("FAILED to unassign product");
         }
     }
 
@@ -258,30 +300,37 @@ public class UserInterface{
     public void listClients()
     {
         Iterator allClients = warehouse.getClients();
-            while (allClients.hasNext())
+        System.out.println("CLIENT LIST");
+        System.out.println("=========================");
+        while (allClients.hasNext())
         {
             Client client = (Client)(allClients.next());
-                System.out.println(client.toString());
-            }
+            System.out.println(client.toString());
+        }
     }
 
-    
+
     //listManufacturers
     public void listManufacturers()
     {
         Iterator allManufacturers = warehouse.getManufacturers();
-            while (allManufacturers.hasNext())
+        System.out.println("MANUFACTURER LIST");
+        System.out.println("=========================");
+        while (allManufacturers.hasNext())
         {
             Manufacturer manufacturer = (Manufacturer)(allManufacturers.next());
-                System.out.println(manufacturer.toString());
-            }
+            System.out.println(manufacturer.toString());
+        }
     }
 
     //list products
     public void listProducts()
     {
         Iterator allProducts = warehouse.getProducts();
-        while (allProducts.hasNext()){
+        System.out.println("PRODUCT LIST");
+        System.out.println("=========================");
+        while (allProducts.hasNext())
+        {
             Product product = (Product)(allProducts.next());
             System.out.println(product.toString());
         }
@@ -292,10 +341,15 @@ public class UserInterface{
     {
         String id = getToken("Enter Product Id");
         Iterator result = warehouse.getSuppliersForProduct(id);
-        
+        System.out.println("Suppliers for Product: " + id);
+        System.out.println("=========================");
+        if(result == null){
+            return;
+        }
+
         while (result.hasNext())
         {
-            System.out.println(result.next());  
+            System.out.println(result.next());
         }
     }
 
@@ -304,88 +358,164 @@ public class UserInterface{
     {
         String id = getToken("Enter Manufacturer Id");
         Iterator result = warehouse.getProductsFromManufacturer(id);
-        
+
+        if(result == null){
+            return;
+        }
+
+        System.out.println("Products supplied by manufacturer: " + id);
+        System.out.println("=========================");
         while (result.hasNext())
         {
-            System.out.println(result.next());  
+            Product product = (Product)(result.next());
+            System.out.println("ID: " + product.getId() + " | Name: " + product.getName());
         }
     }
 
+	//Adds and process an order by a client
+	public void addProcessOrder()
+	{
+		String id = getToken("Enter Client Id");
+
+	}
+
+	//Place an order with a manufacturer
+	public void placeOrderWithManufacturer()
+	{
+		String id = getToken("Enter Manufacturer Id");
+	}
+
+	//Accepts payment from a client
+	public void acceptPayment()
+	{
+		String id = getToken("Enter Client ID: ");
+		float payment = getFloat("Enter payment amount:" );
+		boolean result;
+
+	}
+
+	//Receive a shipment
+	public void receiveShipment()
+	{
+        System.out.println("Dummy Function");
+	}
+
+	//Prints a list of clients with an outstanding balance
+	public void listClientsWithOutstandingBalance()
+	{
+        System.out.println("Dummy Function");
+	}
+
+	//Prints a list of waitlisted orders for a product
+	public void listWaitlistedOrdersForProduct()
+	{
+		String id = getToken("Enter Product Id:");
+	}
+
+	//Prints a list of waitlisted orders for a client
+	public void listWaitlitedOrdersForClient()
+	{
+		String id = getToken("Enter Client Id:");
+	}
+
+	//Prints a list of orders placed with a manufacturer
+	public void listOrdersPlacedWithManufacturer()
+	{
+        String id = getToken("Enter Manufacturer Id");
+	}
+
     //save
-    private void save() 
+    private void save()
     {
-            if (warehouse.save()) 
+        if (warehouse.save())
         {
-                System.out.println(" The warehouse has been successfully saved in the file LibraryData \n" );
-            } 
-        else 
+            System.out.println(" The warehouse has been successfully saved in the file WarehouseData \n" );
+        }
+        else
         {
-                System.out.println(" There has been an error in saving \n" );
-            }
+            System.out.println(" There has been an error in saving \n" );
+        }
     }
 
     //retrieve
-    private void retrieve() 
+    private void retrieve()
     {
-            try 
+        try
         {
-                Warehouse tempWarehouse = Warehouse.retrieve();
-                if (tempWarehouse != null) 
+            Warehouse tempWarehouse = Warehouse.retrieve();
+            if (tempWarehouse != null)
             {
-                    System.out.println(" The Warehouse has been successfully retrieved from the file WarehouseData \n" );
-                    warehouse = tempWarehouse;
-                } 
-            else 
-            {
-                      System.out.println("File doesnt exist; creating new library" );
-                    warehouse = Warehouse.instance();
-                }
-            } 
-        catch(Exception cnfe) 
-        {
-                cnfe.printStackTrace();
+                System.out.println(" The Warehouse has been successfully retrieved from the file WarehouseData \n" );
+                warehouse = tempWarehouse;
             }
+            else
+            {
+                System.out.println("File doesnt exist; creating new library" );
+                warehouse = Warehouse.instance();
+            }
+        }
+        catch(Exception cnfe)
+        {
+            cnfe.printStackTrace();
+        }
     }
 
     //process
     public void process() {
-            int command;
-            help();
-            while ((command = getCommand()) != EXIT) 
+        int command;
+        help();
+
+        while ((command = getCommand()) != EXIT)
         {
-                switch (command) 
+            switch (command)
             {
-                    case ADD_CLIENT:                addClient();
-                                                    break;
-                    case ADD_MANUFACTURER:              addManufacturer();
-                                                    break;
-                    case ADD_PRODUCTS:              addProducts();
-                                                    break;
-                    case ASSIGN_PRODUCT:            assignProduct();
-                                                    break;
-                    case UNASSIGN_PRODUCT:              unassignProduct();
-                                                    break;
-                    case LIST_CLIENTS:              listClients();
-                                                    break;
-                    case LIST_MANUFACTURERS:            listManufacturers();
-                                                    break;
-                    case LIST_PRODUCTS:             listProducts();
-                                                    break;
-                    case LIST_SUPPLIERS_FOR_PRODUCT:        listSuppliersForProduct();
-                                                    break;
-                    case LIST_PRODUCTS_WITH_MANUFACTURER:   listProductsForManufacturer();
-                                                    break;
-                    case SAVE:                      save();
-                                                    break;
-                    case RETRIEVE:                  retrieve();
-                                                    break;      
-                    case HELP:                      help();
-                                                    break;
-                }
+                case ADD_CLIENT:                            addClient();
+                                                            break;
+                case ADD_MANUFACTURER:                      addManufacturer();
+                                                            break;
+                case ADD_PRODUCTS:                          addProducts();
+                                                            break;
+                case ASSIGN_PRODUCT:                        assignProduct();
+                                                            break;
+                case UNASSIGN_PRODUCT:                      unassignProduct();
+                                                            break;
+                case LIST_CLIENTS:                          listClients();
+                                                            break;
+                case LIST_MANUFACTURERS:                    listManufacturers();
+                                                            break;
+                case LIST_PRODUCTS:                         listProducts();
+                                                            break;
+                case LIST_SUPPLIERS_FOR_PRODUCT:            listSuppliersForProduct();
+                                                            break;
+                case LIST_PRODUCTS_FOR_MANUFACTURER:        listProductsForManufacturer();
+                                                            break;
+                case ADD_AND_PROCESS_ORDER                  addProcessOrder();
+                                                            break;
+                case PLACE_ORDER_WITH_MANUFACTURER          placeOrderWithManufacturer();
+                                                            break;
+                case ACCEPT_CLIENT_PAYMENT                  acceptPayment();
+                                                            break;
+                case RECEIVE_SHIPMENT                       receiveShipment();
+                                                            break;
+                case LIST_CLIENTS_WITH_OUTSTANDING_BALANCE  listClientsWithOutstandingBalance();
+                                                            break;
+                case LIST_WAITLISTED_ORDERS_FOR_PRODUCT     listWaitlistedOrdersForProduct();
+                                                            break;
+                case LIST_WAITLISTED_ORDERS_FOR_CLIENT      listWaitlitedOrdersForClient();
+                                                            break;
+                case LIST_ORDERS_PLACED_WITH_MANUFACTURER   listOrdersPlacedWithManufacturer();
+                                                            break;
+                case SAVE:                                  save();
+                                                            break;
+                case RETRIEVE:                              retrieve();
+                                                            break;
+                case HELP:                                  help();
+                                                            break;
             }
+        }
     }
-    
-    public static void main(String[] s) 
+
+    public static void main(String[] s)
     {
         UserInterface.instance().process();
     }
