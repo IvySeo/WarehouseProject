@@ -343,6 +343,7 @@ public class UserInterface{
         Iterator result = warehouse.getSuppliersForProduct(id);
         System.out.println("Suppliers for Product: " + id);
         System.out.println("=========================");
+
         if(result == null){
             return;
         }
@@ -375,8 +376,19 @@ public class UserInterface{
 	//Adds and process an order by a client
 	public void addProcessOrder()
 	{
-		String id = getToken("Enter Client Id");
+		String cid = getToken("Enter Client Id");
 
+		if(warehouse.searchClient(id) == true)
+        {
+            listProducts();
+            String pid = getToken("Enter Product Id")
+
+            if(warehouse.searchProduct(id) == true)
+            {
+                int quantity = getNumber("Enter in quantity")
+                warehouse.addAnddProcessOrder(cid, pid, quantity);
+            }
+        }
 	}
 
 	//Place an order with a manufacturer
@@ -389,6 +401,14 @@ public class UserInterface{
 	public void acceptPayment()
 	{
 		String id = getToken("Enter Client ID: ");
+		boolean flag = searchClient(id);
+
+		if(flag == true)
+        {
+
+
+
+        }
 		float payment = getFloat("Enter payment amount:" );
 		boolean result;
 
