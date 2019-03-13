@@ -1,3 +1,4 @@
+
 import java.util.*;
 import java.io.*;
 public class Manufacturer implements Serializable {
@@ -9,6 +10,7 @@ public class Manufacturer implements Serializable {
   private static final String MANUFACTURER_STRING = "M";
   private List productsSupplied = new LinkedList();
   private List assignedProducts = new LinkedList();
+  private List manufacturerOrders = new LinkedList();
   public  Manufacturer (String name, String address, String phone) {
     this.name = name;
     this.address = address;
@@ -34,6 +36,9 @@ public class Manufacturer implements Serializable {
   
   public String getId() {
     return id;
+  }
+  public Iterator getListOfOrders(){
+     return manufacturerOrders.iterator();
   }
   
   public void assignProduct(Product product){
