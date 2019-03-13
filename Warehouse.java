@@ -108,9 +108,7 @@ public class Warehouse implements Serializable {
   }
     
 	//Stage 2
-	public Order addAndProcessOrder()
-	{
-		
+	public Order addAndProcessOrder(String cid, String pid, int quantity){
 		
 	}
 	
@@ -146,6 +144,26 @@ public class Warehouse implements Serializable {
 	{
 		
 		
+	}
+	
+	public boolean searchClient(String id)
+	{
+		if(clientList.search(id) != null)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean searchProduct(String id)
+	{
+		if(productList.search(id) != null)
+		{
+			return true;
+		}
+		
+		return false;
 	}
   
   public static Warehouse retrieve() {
