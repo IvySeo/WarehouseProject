@@ -13,6 +13,7 @@ public class Product implements Serializable {
   private String id;
   
   private List suppliers = new LinkedList();
+  private List orderedProducts = new LinkedList();
   private static final String PRODUCT_STRING = "P";
 
   //Constructor
@@ -23,7 +24,7 @@ public class Product implements Serializable {
     id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
 
-// invokes funcion getProductID()
+// invokes function getProductID()
   public String getId() { 
     return id;
   }
@@ -68,6 +69,11 @@ public class Product implements Serializable {
   
   public boolean equals(String id) {
     return this.id.equals(id);
+  }
+
+  public Iterator getOrderedProducts()
+  {
+	  return orderedProducts.iterator();
   }
 
   public String toString() {
