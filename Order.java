@@ -9,9 +9,13 @@ public class Order implements Serializable {
   private Client client;
   private List orderedProducts = new LinkedList();
   private static final String ORDER_STRING = "I";
-  private totalCost;
+  private double totalCost;
   
   
+  public Order(){
+      
+    }
+    
   public Order(Client c){
     this.client = c;
     id = ORDER_STRING + (OrderIdServer.instance()).getId();
@@ -22,22 +26,14 @@ public class Order implements Serializable {
     orderedProducts.add(p);
   }
 
-  public Double getTotalCost() {
+  public double getTotalCost() {
     return totalCost;
   }
   
   public Client getOrderingClient() {
-    return orderingClient;
-  }
-  
-  public List getProductsInOrder() {
-    return productsInOrder;
+    return client;
   }
     
-  public void setDate (String newDate) {
-    date = newDate;
-  }
-
   public boolean equals(String id) {
     return this.id.equals(id);
   }

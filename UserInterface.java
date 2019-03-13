@@ -12,7 +12,7 @@ public class UserInterface{
     private static Warehouse warehouse;
     private static final int EXIT = 0;
 
-	//***** STAGE 1 OPEARTIONS *****
+    //***** STAGE 1 OPEARTIONS *****
     private static final int ADD_CLIENT = 1;
     private static final int ADD_MANUFACTURER = 2;
     private static final int ADD_PRODUCTS = 3;
@@ -24,17 +24,17 @@ public class UserInterface{
     private static final int LIST_SUPPLIERS_FOR_PRODUCT = 9;
     private static final int LIST_PRODUCTS_FOR_MANUFACTURER = 10;
 
-	//***** STAGE 2 & 3 OPERATIONS *****
-	private static final int ADD_AND_PROCESS_ORDER = 11;
-	private static final int PLACE_ORDER_WITH_MANUFACTURER = 12;
-	private static final int ACCEPT_CLIENT_PAYMENT = 13;
-	private static final int RECEIVE_SHIPMENT = 14;
-	private static final int LIST_CLIENTS_WITH_OUTSTANDING_BALANCE = 15;
-	private static final int LIST_WAITLISTED_ORDERS_FOR_PRODUCT = 16;
-	private static final int LIST_WAITLISTED_ORDERS_FOR_CLIENT = 17;
-	private static final int LIST_ORDERS_PLACED_WITH_MANUFACTURER = 18;
+    //***** STAGE 2 & 3 OPERATIONS *****
+    private static final int ADD_AND_PROCESS_ORDER = 11;
+    private static final int PLACE_ORDER_WITH_MANUFACTURER = 12;
+    private static final int ACCEPT_CLIENT_PAYMENT = 13;
+    private static final int RECEIVE_SHIPMENT = 14;
+    private static final int LIST_CLIENTS_WITH_OUTSTANDING_BALANCE = 15;
+    private static final int LIST_WAITLISTED_ORDERS_FOR_PRODUCT = 16;
+    private static final int LIST_WAITLISTED_ORDERS_FOR_CLIENT = 17;
+    private static final int LIST_ORDERS_PLACED_WITH_MANUFACTURER = 18;
 
-	private static final int SAVE = 19;
+    private static final int SAVE = 19;
     private static final int RETRIEVE = 20;
     private static final int HELP = 21;
 
@@ -174,8 +174,8 @@ public class UserInterface{
         System.out.println("Enter a number between 0 and 13 as explained below:");
         System.out.println(EXIT + " to Exit\n");
 
-		// ***** STAGE 1 OPERATIONS *****
-		System.out.println(ADD_CLIENT + " to add a client");
+        // ***** STAGE 1 OPERATIONS *****
+        System.out.println(ADD_CLIENT + " to add a client");
         System.out.println(ADD_MANUFACTURER + " to a add manufacturer");
         System.out.println(ADD_PRODUCTS + " to add products");
         System.out.println(ASSIGN_PRODUCT + " to assign manufacturer to a product ");
@@ -186,17 +186,17 @@ public class UserInterface{
         System.out.println(LIST_SUPPLIERS_FOR_PRODUCT + " to print list of suppliers for a specifc product");
         System.out.println(LIST_PRODUCTS_FOR_MANUFACTURER + " to print list of products for a manufacturer who supply each product");
 
-		// ***** STAGE 2 & 3 OPERATIONS *****
-		System.out.println(ADD_AND_PROCESS_ORDER + " to add and process an order");
-		System.out.println(PLACE_ORDER_WITH_MANUFACTURER + " to place an order with a manufacturer");
-		System.out.println(ACCEPT_CLIENT_PAYMENT + " to accept payment from a client");
-		System.out.println(RECEIVE_SHIPMENT + " to receive a shipment");
-		System.out.println(LIST_CLIENTS_WITH_OUTSTANDING_BALANCE + " to print list of clients with an oustanding balance");
-		System.out.println(LIST_WAITLISTED_ORDERS_FOR_PRODUCT + " to print list of waitlisted orders for a product");
-		System.out.println(LIST_WAITLISTED_ORDERS_FOR_CLIENT + " to print list of waitlisted orders for a client");
-		System.out.println(LIST_ORDERS_PLACED_WITH_MANUFACTURER + " to print list of orders placed with manufacturer");
+        // ***** STAGE 2 & 3 OPERATIONS *****
+        System.out.println(ADD_AND_PROCESS_ORDER + " to add and process an order");
+        System.out.println(PLACE_ORDER_WITH_MANUFACTURER + " to place an order with a manufacturer");
+        System.out.println(ACCEPT_CLIENT_PAYMENT + " to accept payment from a client");
+        System.out.println(RECEIVE_SHIPMENT + " to receive a shipment");
+        System.out.println(LIST_CLIENTS_WITH_OUTSTANDING_BALANCE + " to print list of clients with an oustanding balance");
+        System.out.println(LIST_WAITLISTED_ORDERS_FOR_PRODUCT + " to print list of waitlisted orders for a product");
+        System.out.println(LIST_WAITLISTED_ORDERS_FOR_CLIENT + " to print list of waitlisted orders for a client");
+        System.out.println(LIST_ORDERS_PLACED_WITH_MANUFACTURER + " to print list of orders placed with manufacturer");
 
-		System.out.println(SAVE + " to save data");
+        System.out.println(SAVE + " to save data");
         System.out.println(RETRIEVE + " to retrieve");
         System.out.println(HELP + " for help");
     }
@@ -373,76 +373,81 @@ public class UserInterface{
         }
     }
 
-	//Adds and process an order by a client
-	public void addProcessOrder()
-	{
-		String cid = getToken("Enter Client Id");
-
-		if(warehouse.searchClient(id) == true)
+    //Adds and process an order by a client
+    public void addProcessOrder()
+    {
+        String cid = getToken("Enter Client Id");
+        
+        Client client = warehouse.searchClient(cid);
+        if(client != null)
         {
             listProducts();
-            String pid = getToken("Enter Product Id")
-
-            if(warehouse.searchProduct(id) == true)
-            {
-                int quantity = getNumber("Enter in quantity")
-                warehouse.addAnddProcessOrder(cid, pid, quantity);
+            Order order = new Order(client);
+            String pid = getToken("Enter Product Id or 0 to stop");
+            while(true){
+                if(pid.equals("0")){
+                    break;
+                }
+                else
+                {
+                    Product product = warehouse.searchProduct(pid);
+                    if(product != null)
+                    {
+                        int quantity = getNumber("Enter in quantity");
+                        order.addProduct(product, quantity);
+                    }
+                }
+                pid = getToken("Enter Product Id or 0 to stop");
             }
+            warehouse.addAndProcessOrder(pid, order);
         }
-	}
+    }
 
-	//Place an order with a manufacturer
-	public void placeOrderWithManufacturer()
-	{
-		String id = getToken("Enter Manufacturer Id");
-	}
-
-	//Accepts payment from a client
-	public void acceptPayment()
-	{
-		String id = getToken("Enter Client ID: ");
-		boolean flag = searchClient(id);
-
-		if(flag == true)
-        {
-
-
-
-        }
-		float payment = getFloat("Enter payment amount:" );
-		boolean result;
-
-	}
-
-	//Receive a shipment
-	public void receiveShipment()
-	{
-        System.out.println("Dummy Function");
-	}
-
-	//Prints a list of clients with an outstanding balance
-	public void listClientsWithOutstandingBalance()
-	{
-        System.out.println("Dummy Function");
-	}
-
-	//Prints a list of waitlisted orders for a product
-	public void listWaitlistedOrdersForProduct()
-	{
-		String id = getToken("Enter Product Id:");
-	}
-
-	//Prints a list of waitlisted orders for a client
-	public void listWaitlitedOrdersForClient()
-	{
-		String id = getToken("Enter Client Id:");
-	}
-
-	//Prints a list of orders placed with a manufacturer
-	public void listOrdersPlacedWithManufacturer()
-	{
+    //Place an order with a manufacturer
+    public void placeOrderWithManufacturer()
+    {
         String id = getToken("Enter Manufacturer Id");
-	}
+    }
+
+    //Accepts payment from a client
+    public void acceptPayment()
+    {
+        String id = getToken("Enter Client ID: ");
+        
+        float payment = getFloat("Enter payment amount:" );
+        boolean result;
+
+    }
+
+    //Receive a shipment
+    public void receiveShipment()
+    {
+        System.out.println("Dummy Function");
+    }
+
+    //Prints a list of clients with an outstanding balance
+    public void listClientsWithOutstandingBalance()
+    {
+        System.out.println("Dummy Function");
+    }
+
+    //Prints a list of waitlisted orders for a product
+    public void listWaitlistedOrdersForProduct()
+    {
+        String id = getToken("Enter Product Id:");
+    }
+
+    //Prints a list of waitlisted orders for a client
+    public void listWaitlitedOrdersForClient()
+    {
+        String id = getToken("Enter Client Id:");
+    }
+
+    //Prints a list of orders placed with a manufacturer
+    public void listOrdersPlacedWithManufacturer()
+    {
+        String id = getToken("Enter Manufacturer Id");
+    }
 
     //save
     private void save()
@@ -509,21 +514,21 @@ public class UserInterface{
                                                             break;
                 case LIST_PRODUCTS_FOR_MANUFACTURER:        listProductsForManufacturer();
                                                             break;
-                case ADD_AND_PROCESS_ORDER                  addProcessOrder();
+                case ADD_AND_PROCESS_ORDER:                 addProcessOrder();
                                                             break;
-                case PLACE_ORDER_WITH_MANUFACTURER          placeOrderWithManufacturer();
+                case PLACE_ORDER_WITH_MANUFACTURER:         placeOrderWithManufacturer();
                                                             break;
-                case ACCEPT_CLIENT_PAYMENT                  acceptPayment();
+                case ACCEPT_CLIENT_PAYMENT:                 acceptPayment();
                                                             break;
-                case RECEIVE_SHIPMENT                       receiveShipment();
+                case RECEIVE_SHIPMENT:                      receiveShipment();
                                                             break;
-                case LIST_CLIENTS_WITH_OUTSTANDING_BALANCE  listClientsWithOutstandingBalance();
+                case LIST_CLIENTS_WITH_OUTSTANDING_BALANCE: listClientsWithOutstandingBalance();
                                                             break;
-                case LIST_WAITLISTED_ORDERS_FOR_PRODUCT     listWaitlistedOrdersForProduct();
+                case LIST_WAITLISTED_ORDERS_FOR_PRODUCT:    listWaitlistedOrdersForProduct();
                                                             break;
-                case LIST_WAITLISTED_ORDERS_FOR_CLIENT      listWaitlitedOrdersForClient();
+                case LIST_WAITLISTED_ORDERS_FOR_CLIENT:     listWaitlitedOrdersForClient();
                                                             break;
-                case LIST_ORDERS_PLACED_WITH_MANUFACTURER   listOrdersPlacedWithManufacturer();
+                case LIST_ORDERS_PLACED_WITH_MANUFACTURER:  listOrdersPlacedWithManufacturer();
                                                             break;
                 case SAVE:                                  save();
                                                             break;

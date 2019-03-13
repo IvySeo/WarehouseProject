@@ -5,31 +5,31 @@ import java.util.*;
 import java.io.*;
 public class Warehouse implements Serializable {
   private static final long serialVersionUID = 1L;
-  
+
   private ProductList productList;
   private ManufacturerList manufacturerList;
   private ClientList clientList;
-  
+
   private static Warehouse warehouse;
-  
+
   private Warehouse() {
     productList = productList.instance();
     manufacturerList = manufacturerList.instance();
-	clientList = clientList.instance();
+    clientList = clientList.instance();
   }
-	
+
   public static Warehouse instance() {
     if (warehouse == null) {
       ProductIdServer.instance(); // instantiate all singletons
-	  ClientIdServer.instance(); 
-	  ManufacturerIdServer.instance(); 
-	  OrderIdServer.instance();
+      ClientIdServer.instance();
+      ManufacturerIdServer.instance();
+      OrderIdServer.instance();
       return (warehouse = new Warehouse());
     } else {
       return warehouse;
     }
   }
-	
+
   public Manufacturer addManufacturer(String Name, String Address, String PhoneNumber) {
     Manufacturer manufacturer = new Manufacturer(Name, Address, PhoneNumber);
     if (manufacturerList.insertManufacturer(manufacturer)) {
@@ -37,7 +37,7 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
-	
+
   public Client addClient(String name, String address, String phone) {
     Client client = new Client(name, address, phone);
     if (clientList.insertClient(client)) {
@@ -45,7 +45,7 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
-	
+
   public Product addProduct(String name, int quantity, float price) {
     Product product = new Product(name, quantity, price);
     if (productList.insertProduct(product)) {
@@ -53,27 +53,25 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
-  
+
   public boolean assignProductToManufacturer (String productID, String manufacturerID)
   {
-	if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
-		
-		(manufacturerList.search(manufacturerID)).assignProduct(productList.search(productID));
-		(productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
-		return true;
-	}
-	return false;
+    if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
+        (manufacturerList.search(manufacturerID)).assignProduct(productList.search(productID));
+        (productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
+        return true;
+    }
+    return false;
   }
-	
+
   public boolean unassignProductToManufacturer (String productID, String manufacturerID)
   {
-	if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
-		
-		(manufacturerList.search(manufacturerID)).unassignProduct(productList.search(productID));
-		(productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
-		return true;
-	}
-	return false;
+    if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
+        (manufacturerList.search(manufacturerID)).unassignProduct(productList.search(productID));
+        (productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
+        return true;
+    }
+    return false;
   }
 
   public Iterator getClients() {
@@ -83,98 +81,81 @@ public class Warehouse implements Serializable {
   public Iterator getManufacturers() {
       return manufacturerList.getManufacturers();
   }
-  
+
   public Iterator<Product> getProducts() {
       return productList.getProducts();
   }
-  
+
   public Iterator getSuppliersForProduct(String ProductID){
-	  
-	  if(productList.search(ProductID) != null){
-		  return (productList.search(ProductID)).getProviders();
-	  }
-	  
-	  return null;
-	  
+      if(productList.search(ProductID) != null){
+          return (productList.search(ProductID)).getProviders();
+      }
+
+      return null;
   }
-  
-    public Iterator getProductsFromManufacturer(String ManufacturerID){
-	    
-	  if(manufacturerList.search(ManufacturerID) != null){
-		  return (manufacturerList.search(ManufacturerID)).getProvidedProducts();
-	  }
-	  
-	    return null;
+
+  public Iterator getProductsFromManufacturer(String ManufacturerID){
+      if(manufacturerList.search(ManufacturerID) != null){
+          return (manufacturerList.search(ManufacturerID)).getProvidedProducts();
+      }
+
+      return null;
   }
-    
-	//Stage 2
-	public Order addAndProcessOrder(String cid, String pid, int quantity){
-		
-	}
-	
-	public Shipment placeOrderWithManufacturer(String mfct_ID, String prd_ID, int qty)
-	{
-		Manufacturer mfct = manufacturerList.search(mct_ID);
-		
-	}
-	
-	public void acceptClientPayment(String clnt_ID, String ord_ID, double payment)
-	{
-		//Find Invoice
-		if(clientList.search(clnt_ID) != null)
-		{
-			Client clnt = clientList.search(clnt_ID);
-			
-			if(clnt.getOrder(ord_ID) != null)
-			{
-				Order ord = clnt.getOrder(ord_ID);
-				
-				if(ord.getInvoice() != null)
-				{
-					Invoice inv = ord.getInvoice();
-					
-					inv.updateBalance(payment);
-				}
-			}
-		}
-	}
-	
-	//Stage 3
-	public void recieveShipment()
-	{
-		
-		
-	}
-	
-	public boolean searchClient(String id)
-	{
-		if(clientList.search(id) != null)
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public boolean searchProduct(String id)
-	{
-		if(productList.search(id) != null)
-		{
-			return true;
-		}
-		
-		return false;
-	}
-  
+
+  //Stage 2
+  public boolean addAndProcessOrder(String id, Order order){
+      if((clientList.search(id)).addOrder(order) != false ){
+          return true;
+      }
+      return false;
+  }
+
+    public void placeOrderWithManufacturer(String mfct_ID, String prd_ID, int qty)
+    {
+        Manufacturer mfct = manufacturerList.search(mfct_ID);
+    }
+
+    public void acceptClientPayment(String clnt_ID, String ord_ID, double payment)
+    {
+        
+    }
+
+    //Stage 3
+    public void recieveShipment()
+    {
+
+
+    }
+
+    public Client searchClient(String id)
+    {
+        if(clientList.search(id) != null)
+        {
+            return (clientList.search(id));
+        }
+
+        return null;
+    }
+
+    public Product searchProduct(String id)
+    {
+        if(productList.search(id) != null)
+        {
+            return (productList.search(id));
+        }
+
+        return null;
+    }
+
   public static Warehouse retrieve() {
     try {
       FileInputStream file = new FileInputStream("WarehouseData");
       ObjectInputStream input = new ObjectInputStream(file);
       input.readObject();
       ProductIdServer.retrieve(input);
-	  ManufacturerIdServer.retrieve(input);
-	  ClientIdServer.retrieve(input);
-	  OrderIdServer.retrieve(input);
+      ManufacturerIdServer.retrieve(input);
+      ClientIdServer.retrieve(input);
+      OrderIdServer.retrieve(input);
       return warehouse;
     } catch(IOException ioe) {
       ioe.printStackTrace();
@@ -184,23 +165,23 @@ public class Warehouse implements Serializable {
       return null;
     }
   }
-	
+
   public static boolean save() {
     try {
       FileOutputStream file = new FileOutputStream("WarehouseData");
       ObjectOutputStream output = new ObjectOutputStream(file);
       output.writeObject(warehouse);
       output.writeObject(ProductIdServer.instance());
-	  output.writeObject(ManufacturerIdServer.instance());
-	  output.writeObject(ClientIdServer.instance());
-	  output.writeObject(OrderIdServer.instance());
+      output.writeObject(ManufacturerIdServer.instance());
+      output.writeObject(ClientIdServer.instance());
+      output.writeObject(OrderIdServer.instance());
       return true;
     } catch(IOException ioe) {
       ioe.printStackTrace();
       return false;
     }
   }
-	
+
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
@@ -209,7 +190,7 @@ public class Warehouse implements Serializable {
       System.out.println(ioe);
     }
   }
-	
+
   private void readObject(java.io.ObjectInputStream input) {
     try {
       input.defaultReadObject();
@@ -224,5 +205,4 @@ public class Warehouse implements Serializable {
       e.printStackTrace();
     }
   }
- 
 }
