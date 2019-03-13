@@ -9,7 +9,7 @@ public class ShippedProduct implements Serializable{
     private int quantity;
     
     public ShippedProduct(ManufacturerOrder manufacturerOrder, Product product, int quantity) {
-	       this.order = order;
+	       this.manufacturerOrder = manufacturerOrder;
 	       this.product = product;
 	       this.quantity = quantity;
     }
@@ -18,7 +18,7 @@ public class ShippedProduct implements Serializable{
     	return quantity;
     }
     
-    public Order getManufacturerOrder() {
+    public ManufacturerOrder getmanufacturerOrder() {
     	return manufacturerOrder;
     }
    
