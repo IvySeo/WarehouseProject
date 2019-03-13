@@ -23,6 +23,7 @@ public class Warehouse implements Serializable {
       ProductIdServer.instance(); // instantiate all singletons
 	  ClientIdServer.instance(); 
 	  ManufacturerIdServer.instance(); 
+	  OrderIdServer.instance();
       return (warehouse = new Warehouse());
     } else {
       return warehouse;
@@ -83,7 +84,7 @@ public class Warehouse implements Serializable {
       return manufacturerList.getManufacturers();
   }
   
-  public Iterator getProducts() {
+  public Iterator<Product> getProducts() {
       return productList.getProducts();
   }
   
@@ -105,6 +106,47 @@ public class Warehouse implements Serializable {
 	  
 	    return null;
   }
+    
+	//Stage 2
+	public Order addAndProcessOrder()
+	{
+		
+		
+	}
+	
+	public Shipment placeOrderWithManufacturer(String mfct_ID, String prd_ID, int qty)
+	{
+		Manufacturer mfct = manufacturerList.search(mct_ID);
+		
+	}
+	
+	public void acceptClientPayment(String clnt_ID, String ord_ID, double payment)
+	{
+		//Find Invoice
+		if(clientList.search(clnt_ID) != null)
+		{
+			Client clnt = clientList.search(clnt_ID);
+			
+			if(clnt.getOrder(ord_ID) != null)
+			{
+				Order ord = clnt.getOrder(ord_ID);
+				
+				if(ord.getInvoice() != null)
+				{
+					Invoice inv = ord.getInvoice();
+					
+					inv.updateBalance(payment);
+				}
+			}
+		}
+	}
+	
+	//Stage 3
+	public void recieveShipment()
+	{
+		
+		
+	}
   
   public static Warehouse retrieve() {
     try {
@@ -114,6 +156,7 @@ public class Warehouse implements Serializable {
       ProductIdServer.retrieve(input);
 	  ManufacturerIdServer.retrieve(input);
 	  ClientIdServer.retrieve(input);
+	  OrderIdServer.retrieve(input);
       return warehouse;
     } catch(IOException ioe) {
       ioe.printStackTrace();
@@ -132,6 +175,7 @@ public class Warehouse implements Serializable {
       output.writeObject(ProductIdServer.instance());
 	  output.writeObject(ManufacturerIdServer.instance());
 	  output.writeObject(ClientIdServer.instance());
+	  output.writeObject(OrderIdServer.instance());
       return true;
     } catch(IOException ioe) {
       ioe.printStackTrace();
