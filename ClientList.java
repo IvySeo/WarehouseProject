@@ -22,6 +22,8 @@ public class ClientList implements Serializable {
     }
   }
 
+}
+
   public boolean insertClient(Client client) {
     return clients.add(client);
   }

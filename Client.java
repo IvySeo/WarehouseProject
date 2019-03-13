@@ -1,6 +1,7 @@
 // author: Ivy
 // state: final
 
+
 // imports
 import java.io.Serializable;
 import java.util.*;
@@ -18,7 +19,7 @@ public class Client implements Serializable {
   private String name;
   private String address;
   private String phone;
-
+  private List orders = new LinkedList();
   private String id;
 
   public Client (String name, String address, String phone) {
@@ -51,6 +52,7 @@ public class Client implements Serializable {
     phone = newPhone;
   }
 
+
 // boolean - if id is equal or not
   public boolean equals(String id) {
     return this.id.equals(id);
@@ -64,7 +66,7 @@ public class Client implements Serializable {
 
 // add client to Client list
 private void insertClient() {
-    Client client = ClientList.insertClient();
+    Client clients = ClientList.insertClient();
         if (client == null) {
             System.out.println("Cannot add a client.");
         }
@@ -72,6 +74,22 @@ private void insertClient() {
             System.out.println("Client " + client + " was added successfully.");
         }
     }
+
+  // when warehouse invokes client add order function, it returns client id to Order class
+public boolean addOrder(Order o) {
+  order.add(o);
+  return true;
+}
+
+// get a list of waitlisted orders for a client
+public Integer getWaitList(Integer id){
+        if (ClientList client.contains(id) == null) { // if the id is not found in clientList
+            System.out.println("ID does not exist");
+        }
+        else {
+            System.out.println("ID " + id + " exist");
+        }
+   }
 
 // list client from client list
 private void listClients() {
@@ -81,7 +99,9 @@ private void listClients() {
             System.out.println(ClientList.next());
         }
     }
-// list client with balance
+
+
+// list client with Outstanding balance
 private void listClientsWithBalance() {
     Iterator clients = ClientList.getClient();
 	Client client = new Client();
@@ -97,5 +117,6 @@ private void listClientsWithBalance() {
             }
     	}
     }
+    
 
 }
