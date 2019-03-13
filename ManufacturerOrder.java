@@ -24,5 +24,11 @@ public class ManufacturerOrder implements Serializable {
   public Iterator getProductsInOrder() {
     return shippedProducts.iterator();
   }
+  
+  public String toString(){
+	  String string = "Manufacturer Order ID: " + id + " | Supplier: " + supplier.toString();
+	  
+	  return string;
+  }
 	
 }
