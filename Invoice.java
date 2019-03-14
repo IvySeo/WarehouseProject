@@ -10,27 +10,21 @@ public class Invoice implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	private Client client;
 	private Order order;
 	private float balance; 
 
-
-    publice Invoice (String client, String order, float balance){
-        this.client = client;
+    public Invoice (Order order, float balance){
         this.order = order;
         this.balance = balance;
     }
 
 // get and set - basic functions
-    public String getClient(){
-        return client;
-    }
 
-    public String getOrder(){
+    public Order getOrder(){
         return order;
     }
 
-    public void UpdateBalance(float balance){
+    public float UpdateBalance(float balance){
         this.balance += balance;
         return balance;
     }
@@ -40,7 +34,7 @@ public class Invoice implements Serializable{
     }
 // display the information
   public String toString() {
-    String string = "client: " + client + " order: " + order + " balance: " + balance;
+    String string = " order: " + order.getId() + " balance: " + balance;
     return string;
   }
 
