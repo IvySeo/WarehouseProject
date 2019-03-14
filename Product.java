@@ -54,12 +54,12 @@ public class Product implements Serializable {
     salesPrice = newSalesPrice;
   }
   
-  public void assignManufacturer(Manufacturer manufacturer) {
-    suppliers.add(manufacturer);
+  public void assignSuppliedProduct(SuppliedProduct supply) {
+    suppliers.add(supply);
   }
   
-  public void unassignManufacturer(Manufacturer manufacturer) {
-    suppliers.remove(manufacturer);
+  public void unassignSuppliedProduct(SuppliedProduct supply) {
+    suppliers.remove(supply);
   }
   
   
