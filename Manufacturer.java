@@ -41,6 +41,14 @@ public class Manufacturer implements Serializable {
      return manufacturerOrders.iterator();
   }
   
+  public void addOrder(ManufacturerOrder ord) {
+	  manufacturerOrders.add(ord);
+  }
+  
+  public void removeOrder(ManufacturerOrder ord) {
+	  manufacturerOrders.remove(ord);
+  }
+  
   public void assignProduct(SuppliedProduct product){
     productsSupplied.add(product);
   }
