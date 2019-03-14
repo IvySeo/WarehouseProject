@@ -25,4 +25,10 @@ public class SuppliedProduct implements Serializable{
     public float getSupplyPrice() {
     	return supplyPrice;
     }
+    
+    public String toString(){
+  	  String string = "Manufacturer: " + manufacturer.getId() + " | Product: " + product.getId() + " | Price: " + supplyPrice;
+  	  
+  	  return string;
+    }
 }
