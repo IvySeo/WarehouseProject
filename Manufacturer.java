@@ -41,12 +41,12 @@ public class Manufacturer implements Serializable {
      return manufacturerOrders.iterator();
   }
   
-  public void assignProduct(Product product){
+  public void assignProduct(SuppliedProduct product){
     productsSupplied.add(product);
   }
   
-  public void unassignProduct(Product product){
-    productSupplied.remove(product);
+  public void unassignProduct(SuppliedProduct product){
+    productsSupplied.remove(product);
   }
   
   public void setName(String newName) {
