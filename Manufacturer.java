@@ -49,6 +49,19 @@ public class Manufacturer implements Serializable {
     productsSupplied.remove(product);
   }
   
+  public SuppliedProduct search(String id) {
+    Iterator allSupply = getProvidedProducts();
+    while(allSupply.hasNext()){
+        SuppliedProduct spl_prdct = (SuppliedProduct)(allSupply.next());
+        
+        if(spl_prdct.getProduct().equals(id)){
+            return spl_prdct;
+        }
+    }
+    
+    return null;
+  }
+  
   public void setName(String newName) {
     name = newName;
   }
