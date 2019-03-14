@@ -9,6 +9,7 @@ public class Warehouse implements Serializable {
   private ProductList productList;
   private ManufacturerList manufacturerList;
   private ClientList clientList;
+  private WaitList waitList;
 
   private static Warehouse warehouse;
 
@@ -16,6 +17,7 @@ public class Warehouse implements Serializable {
     productList = productList.instance();
     manufacturerList = manufacturerList.instance();
     clientList = clientList.instance();
+    waitList = waitList.instance();
   }
 
   public static Warehouse instance() {
@@ -24,7 +26,7 @@ public class Warehouse implements Serializable {
       ClientIdServer.instance();
       ManufacturerIdServer.instance();
       OrderIdServer.instance();
-      ManufacturerOrderIDServer.instance();
+      ManufacturerOrderIdServer.instance();
       return (warehouse = new Warehouse());
     } else {
       return warehouse;
@@ -55,12 +57,17 @@ public class Warehouse implements Serializable {
     return null;
   }
 
-  //Assigning and Unassigning Product Functions
-  public boolean assignProductToManufacturer (String productID, String manufacturerID)
+  //Assigning and Un-assigning Product Functions
+  public boolean assignProductToManufacturer (String productID, String manufacturerID, float price)
   {
-    if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
-        (manufacturerList.search(manufacturerID)).assignProduct(productList.search(productID));
-        (productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
+	Manufacturer mfct = manufacturerList.search(manufacturerID);
+	Product prdct = productList.search(productID);
+	
+    if(mfct != null && prdct != null){
+    	SuppliedProduct spl_prdct = new SuppliedProduct(mfct, prdct, price);
+    	
+        mfct.assignProduct(spl_prdct);
+        prdct.assignSuppliedProduct(spl_prdct);
         return true;
     }
     return false;
@@ -68,10 +75,22 @@ public class Warehouse implements Serializable {
 
   public boolean unassignProductToManufacturer (String productID, String manufacturerID)
   {
-    if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
-        (manufacturerList.search(manufacturerID)).unassignProduct(productList.search(productID));
-        (productList.search(productID)).assignManufacturer(manufacturerList.search(manufacturerID));
-        return true;
+	Manufacturer mfct = manufacturerList.search(manufacturerID);
+	Product prdct = productList.search(productID);
+	
+	  
+    if(mfct != null && prdct != null){
+    	SuppliedProduct spl_prdct = mfct.search(productID);
+    	
+    	if(spl_prdct != null)
+    	{
+    		mfct.unassignProduct(spl_prdct);
+        	prdct.unassignSuppliedProduct(spl_prdct);
+        	
+        	spl_prdct = null;
+        	
+        	return true;
+    	}
     }
     return false;
   }
@@ -103,6 +122,10 @@ public class Warehouse implements Serializable {
       }
 
       return null;
+  }
+  
+  public Iterator getWaitList() {
+	  return waitList.getOrders();
   }
 
   //Stage 2
@@ -161,6 +184,7 @@ public class Warehouse implements Serializable {
       ManufacturerIdServer.retrieve(input);
       ClientIdServer.retrieve(input);
       OrderIdServer.retrieve(input);
+      ManufacturerOrderIdServer.retrieve(input);
       return warehouse;
     } catch(IOException ioe) {
       ioe.printStackTrace();
@@ -180,6 +204,7 @@ public class Warehouse implements Serializable {
       output.writeObject(ManufacturerIdServer.instance());
       output.writeObject(ClientIdServer.instance());
       output.writeObject(OrderIdServer.instance());
+      output.writeObject(ManufacturerOrderIdServer.instance());
       return true;
     } catch(IOException ioe) {
       ioe.printStackTrace();
