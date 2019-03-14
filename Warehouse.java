@@ -24,6 +24,7 @@ public class Warehouse implements Serializable {
       ClientIdServer.instance();
       ManufacturerIdServer.instance();
       OrderIdServer.instance();
+      ManufacturerOrderIDServer.instance();
       return (warehouse = new Warehouse());
     } else {
       return warehouse;
@@ -54,6 +55,7 @@ public class Warehouse implements Serializable {
     return null;
   }
 
+  //Assigning and Unassigning Product Functions
   public boolean assignProductToManufacturer (String productID, String manufacturerID)
   {
     if(manufacturerList.search(manufacturerID) != null && productList.search(productID) != null){
@@ -74,6 +76,7 @@ public class Warehouse implements Serializable {
     return false;
   }
 
+  //List Getters
   public Iterator getClients() {
       return clientList.getClients();
   }
@@ -126,7 +129,8 @@ public class Warehouse implements Serializable {
 
 
     }
-
+    
+    //Search Functions
     public Client searchClient(String id)
     {
         if(clientList.search(id) != null)
@@ -146,7 +150,8 @@ public class Warehouse implements Serializable {
 
         return null;
     }
-
+ 
+   //Save and Load Functions
   public static Warehouse retrieve() {
     try {
       FileInputStream file = new FileInputStream("WarehouseData");
