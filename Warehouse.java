@@ -10,6 +10,8 @@ public class Warehouse implements Serializable {
   private ManufacturerList manufacturerList;
   private ClientList clientList;
   private WaitList waitList;
+  private OrderList orderList;
+  private ManufacturerOrderList manufacturerOrderList;
 
   private static Warehouse warehouse;
 
@@ -107,6 +109,10 @@ public class Warehouse implements Serializable {
   public Iterator<Product> getProducts() {
       return productList.getProducts();
   }
+  
+  public Iterator getWaitList() {
+	  return waitList.getOrders();
+  }
 
   public Iterator getSuppliersForProduct(String ProductID){
       if(productList.search(ProductID) != null){
@@ -123,34 +129,184 @@ public class Warehouse implements Serializable {
 
       return null;
   }
-  
-  public Iterator getWaitList() {
-	  return waitList.getOrders();
-  }
+
 
   //Stage 2
-  public boolean addAndProcessOrder(String id, Order order){
-      if((clientList.search(id)).addOrder(order) != false ){
-          return true;
-      }
-      return false;
+  public Order createOrder(String clnt_id)
+  {
+	 Client clnt = clientList.search(clnt_id);
+	 
+	 if(clnt != null)
+	 {
+		 Order ord = new Order(clnt);
+		 
+		 clnt.addOrder(ord);
+		 orderList.insertOrder(ord);
+		 return ord;
+	 }
+	 return null;
   }
+  
+  public bool processOrder(Order ord)
+  {
+		Iterator ord_prd_iterator = ord.getOrderedProducts();
+		
+		//Check if all orderedproducts are in stock in inventory
+		while (ord_prd_iterator.hasNext())
+		{
+			OrderedProduct ord_prd = (OrderedProduct)ord_prd_iterator.next();
 
+    		Product prd_toCheckQtyFor = ord_prd.getProduct();
+
+			if(prd_toCheckQtyFor.getQuantity() < ord_prd.getQuantity())
+			{
+				//If any one orderedproduct cant be fulfilled, put order on waitlist immediately.
+				waitList.insertOrder(ord);
+				
+				return false;
+			}
+		}
+		
+		//Fulfill Order
+		Iterator ord_prd_iterator_fulfill = ord.getOrderedProducts();
+		while (ord_prd_iterator.hasNext())
+		{
+			OrderedProduct ord_prd = (OrderedProduct)ord_prd_iterator.next();
+
+    		Product prd_inInventory = ord_prd.getProduct();
+
+			prd_inInventory.deductQuantity(ord_prd.getQuantity());
+			
+			//Possibly update order object?
+		}
+		
+		
+		return true;
+  }
+  
     public void placeOrderWithManufacturer(String mfct_ID, String prd_ID, int qty)
     {
         Manufacturer mfct = manufacturerList.search(mfct_ID);
+        Product prdct = productList.search(prd_ID);
+        
+        if(mfct != null && prdct != null){
+        	ManufacturerOrder mfct_ord = new ManufacturerOrder(mfct);
+        	
+        	mfct_ord.addProductToOrder(prdct, qty);
+        	
+        	mfct.addOrder(mfct_ord);
+        	
+        	manufacturerOrderList.insertManufacturerOrder(mfct_ord);
+        }
     }
 
-    public void acceptClientPayment(String clnt_ID, String ord_ID, double payment)
+    public boolean acceptClientPayment(String clnt_ID, String ord_ID, float payment)
     {
+        Client clnt = clientList.search(clnt_ID);
         
+        if(clnt != null) {
+        	
+        	Order ord = clnt.search(ord_ID);
+        	
+        	if (ord != null)
+        	{
+        		Invoice inv = ord.getInvoice();
+        		
+        		if (inv != null)
+        		{
+        			inv.UpdateBalance(payment);
+        			
+        			return true;
+        		}
+        	}
+        }
+        return false;
     }
 
     //Stage 3
-    public void recieveShipment()
+    public boolean canFulfill_OrderedProduct(OrderedProduct ord_prd, ManufacturerOrder mOrder)
     {
+    	//Check manufacturerOrder OR product list for enough quantity to fulfill orderedproduct in order.
+    	ShippedProduct shp_prd = mOrder.getProductsInOrder();
+    	if(shp_prd != null)
+    	{
+    		Product prd_inMOrder = shp_prd.getProduct();
 
-
+    		Product prd_toCheckQtyFor = ord_prd.getProduct();
+    		
+    		if(prd_inMOrder == prd_toCheckQtyFor)
+    		{
+    			if(shp_prd.getQuantity() >= ord_prd.getQuantity())
+    			{
+    				return true;
+    			}
+    		}
+    		else
+    		{
+    			if(prd_toCheckQtyFor.getQuantity() >= ord_prd.getQuantity())
+    			{
+    				return true;
+    			}
+    		}
+    		
+    	}
+    	return false;
+    	
+    }
+    
+    //ensure EVERY orderedproduct CAN BE FULFILLED before calling. See above function.
+    public Order fulfillOrder(Order ord, ManufacturerOrder mfct_ord)
+    {
+    	//Remove order from waitlist
+    	waitList.removeOrder(ord);
+    	
+    	//deduct quantity of each orderedproduct from Morder or Product List
+    	Iterator ord_prd_iterator = ord.getOrderedProducts();
+    	
+    	while (ord_prd_iterator.hasNext())
+    	{
+    		OrderedProduct ord_prd = (OrderedProduct)ord_prd_iterator.next();
+    		
+	    	ShippedProduct shp_prd = mfct_ord.getProductsInOrder();
+	    	if(shp_prd != null)
+	    	{
+	    		Product prd_inMOrder = shp_prd.getProduct();
+	
+	    		Product prd_toCheckQtyFor = ord_prd.getProduct();
+	    		
+	    		if(prd_inMOrder == prd_toCheckQtyFor)
+	    		{
+	    			if(shp_prd.getQuantity() >= ord_prd.getQuantity())
+	    			{
+	    				shp_prd.deductQuantity(ord_prd.getQuantity());
+	    			}
+	    		}
+	    		else
+	    		{
+	    			if(prd_toCheckQtyFor.getQuantity() >= ord_prd.getQuantity())
+	    			{
+	    				prd_toCheckQtyFor.deductQuantity(ord_prd.getQuantity());
+	    			}
+	    		}  		
+	    	}
+    	}
+    	return ord;
+    }
+    
+    public boolean addRemaining_ShippedProduct(ManufacturerOrder mfct_ord)
+    {
+    	//Add Remaining shipped product (if any) to product in product List
+    	ShippedProduct shp_prd = mfct_ord.getProductsInOrder();
+    	
+    	if(shp_prd != null)
+    	{
+    		if (shp_prd.getQuantity() > 0)
+    		{
+    			shp_prd.getProduct().addQuantity(shp_prd.getQuantity());
+    			return true;
+    		}
+    	}
+    	return false;
     }
     
     //Search Functions
