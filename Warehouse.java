@@ -147,7 +147,7 @@ public class Warehouse implements Serializable {
 	 return null;
   }
   
-  public bool processOrder(Order ord)
+  public boolean processOrder(Order ord)
   {
 		Iterator ord_prd_iterator = ord.getOrderedProducts();
 		
