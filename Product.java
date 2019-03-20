@@ -50,6 +50,16 @@ public class Product implements Serializable {
     quantity = newQuantity;
   }
   
+  public void deductQuantity(int amountToDeduct) {
+  	quantity -= amountToDeduct;
+  	return;
+  }
+  
+  public void addQuantity(int amountToAdd) {
+	  quantity += amountToAdd;
+	  return;
+  }
+  
   public void setSalesPrice(float newSalesPrice) {
     salesPrice = newSalesPrice;
   }
