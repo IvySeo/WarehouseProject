@@ -18,6 +18,11 @@ public class ShippedProduct implements Serializable{
     	return quantity;
     }
     
+    public void deductQuantity(int amountToDeduct) {
+    	quantity -= amountToDeduct;
+    	return;
+    }
+    
     public ManufacturerOrder getmanufacturerOrder() {
     	return manufacturerOrder;
     }
