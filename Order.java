@@ -33,6 +33,10 @@ public class Order implements Serializable {
   public Client getOrderingClient() {
     return client;
   }
+  
+  public Iterator getOrderedProducts(){
+	  return orderedProducts.iterator();
+  }
     
   public boolean equals(String id) {
     return this.id.equals(id);
