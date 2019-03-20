@@ -184,20 +184,32 @@ public class Warehouse implements Serializable {
 		return true;
   }
   
-    public void placeOrderWithManufacturer(String mfct_ID, String prd_ID, int qty)
+    public boolean placeOrderWithManufacturer(String mfct_ID, String prd_ID, int qty)
     {
         Manufacturer mfct = manufacturerList.search(mfct_ID);
         Product prdct = productList.search(prd_ID);
+
         
-        if(mfct != null && prdct != null){
-        	ManufacturerOrder mfct_ord = new ManufacturerOrder(mfct);
+        if(mfct != null && prdct != null)
+        {
+            SuppliedProduct spl_prd = mfct.search(prd_ID);
         	
-        	mfct_ord.addProductToOrder(prdct, qty);
-        	
-        	mfct.addOrder(mfct_ord);
-        	
-        	manufacturerOrderList.insertManufacturerOrder(mfct_ord);
+            if(spl_prd != null)
+            {
+	        	ManufacturerOrder mfct_ord = new ManufacturerOrder(mfct);
+	        	
+	        	mfct_ord.addProductToOrder(prdct, qty);
+	        	
+	        	mfct_ord.calculateTotalCost(spl_prd);
+	        	
+	        	mfct.addOrder(mfct_ord);
+	        	
+	        	manufacturerOrderList.insertManufacturerOrder(mfct_ord);
+	        	
+	        	return true;
+            }
         }
+        return false;
     }
 
     public boolean acceptClientPayment(String clnt_ID, String ord_ID, float payment)
