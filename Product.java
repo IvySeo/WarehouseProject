@@ -1,5 +1,5 @@
-// author: Ivy Seo 
-// stage 1
+// Author: Ivy Seo 
+// Stage 1
 
 import java.util.*;
 import java.lang.*;
@@ -9,22 +9,21 @@ public class Product implements Serializable {
 
   private String name;
   private int quantity;
-  private float salesPrice;
+  private double salesPrice;
   private String id;
   
   private List suppliers = new LinkedList();
-  private List orderedProducts = new LinkedList();
   private static final String PRODUCT_STRING = "P";
 
   //Constructor
-  public Product(String name, int quantity, float salesPrice) {
+  public Product(String name, int quantity, double salesPrice) {
     this.name = name;
     this.quantity = quantity;
     this.salesPrice = salesPrice;
     id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
 
-// invokes function getProductID()
+  // invokes funcion getProductID()
   public String getId() { 
     return id;
   }
@@ -37,7 +36,7 @@ public class Product implements Serializable {
     return quantity;
   }
   
-  public float getSalesPrice() {
+  public double getSalesPrice() {
     return salesPrice;
   }
   
@@ -50,26 +49,20 @@ public class Product implements Serializable {
     quantity = newQuantity;
   }
   
-  public void deductQuantity(int amountToDeduct) {
-  	quantity -= amountToDeduct;
-  	return;
-  }
-  
-  public void addQuantity(int amountToAdd) {
-	  quantity += amountToAdd;
-	  return;
-  }
-  
-  public void setSalesPrice(float newSalesPrice) {
+  public void setSalesPrice(double newSalesPrice) {
     salesPrice = newSalesPrice;
   }
   
-  public void assignSuppliedProduct(SuppliedProduct supply) {
-    suppliers.add(supply);
+  public void updateQuantity(int amount){
+      quantity += amount;
   }
   
-  public void unassignSuppliedProduct(SuppliedProduct supply) {
-    suppliers.remove(supply);
+  public void assignManufacturer(Manufacturer manufacturer) {
+    suppliers.add(manufacturer);
+  }
+  
+  public void unassignManufacturer(Manufacturer manufacturer) {
+    suppliers.remove(manufacturer);
   }
   
   
@@ -81,13 +74,8 @@ public class Product implements Serializable {
     return this.id.equals(id);
   }
 
-  public Iterator getOrderedProducts()
-  {
-	  return orderedProducts.iterator();
-  }
-
   public String toString() {
-    String string = "Product ID " + id + " name " + name + " quantity " + quantity + " salesPrice " + salesPrice;
+    String string = "PID: " + id + " | Product: " + name + " | Quantity: " + quantity + " | salesPrice $" + salesPrice;
     return string;  
   }
 }

@@ -1,41 +1,31 @@
-// author: Ivy
-// state: final
-
-// imports
 import java.util.*;
 import java.text.*;
 import java.io.*;
 
+//Not needed for stage 1 processes. So this class may be incomplete
 public class Invoice implements Serializable{
-
-	private static final long serialVersionUID = 1L;
-
-	private Order order;
-	private float balance; 
-
-    public Invoice (Order order, float balance){
-        this.order = order;
-        this.balance = balance;
+    private static final long serialVersionUID = 1L;
+    private Client client;
+    private List orders = new LinkedList();
+    private double balance;
+    
+    public Invoice(){
+        balance = 0.0;
     }
-
-// get and set - basic functions
-
-    public Order getOrder(){
-        return order;
+    
+    public void addOrder(Order o){
+        orders.add(o);
     }
-
-    public float UpdateBalance(float balance){
-        this.balance += balance;
+    
+    public Client getClient(){
+        return client;
+    }
+    
+    public double getBalance() {
         return balance;
     }
-
-    public float getBalance(){
-        return balance;
+    
+    public void setBalance(double newBalance) {
+        balance = newBalance;
     }
-// display the information
-  public String toString() {
-    String string = " order: " + order.getId() + " balance: " + balance;
-    return string;
-  }
-
 }

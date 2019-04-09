@@ -1,3 +1,6 @@
+//Author: Sumaira Shahzad
+//Stage 1
+
 import java.util.*;
 import java.io.*;
 public class ManufacturerList implements Serializable {
@@ -45,6 +48,7 @@ public class ManufacturerList implements Serializable {
       ioe.printStackTrace();
     }
   }
+  
   private void readObject(java.io.ObjectInputStream input) {
     try {
       if (manufacturerList != null) {
@@ -63,6 +67,7 @@ public class ManufacturerList implements Serializable {
       cnfe.printStackTrace();
     }
   }
+  
   public String toString() {
     return manufacturers.toString();
   }

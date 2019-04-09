@@ -5,45 +5,52 @@ import java.util.*;
 import java.io.*;
 public class Order implements Serializable {
   private static final long serialVersionUID = 1L;
-  private String id;
-  private Client client;
-  private List orderedProducts = new LinkedList();
-  private static final String ORDER_STRING = "I";
-  private double totalCost;
-  
-  
-  public Order(){
-      
-    }
     
-  public Order(Client c){
+  private double totalCost;
+  private Client client;
+  private Product product;
+  
+  //quantity of product ordered
+  private int orderedQuantity;
+  
+  private String id;
+  private static final String ORDER_STRING = "O";
+  public Order (Client c, Product p, int quantity) {
     this.client = c;
+    this.product = p;
+    this.orderedQuantity = quantity;
+    this.totalCost = p.getSalesPrice() * quantity;
     id = ORDER_STRING + (OrderIdServer.instance()).getId();
   }
-  
-  public void addProduct(Product p, int quantity){
-    p.setQuantity(quantity);
-    orderedProducts.add(p);
-  }
 
+  public String getId(){
+      return id;
+  }
+  
   public double getTotalCost() {
     return totalCost;
   }
   
-  public Client getOrderingClient() {
+  public Client getClient() {
     return client;
   }
   
-  public Iterator getOrderedProducts(){
-	  return orderedProducts.iterator();
-  }
-    
-  public boolean equals(String id) {
-    return this.id.equals(id);
+  public Product getProduct() {
+    return product;
   }
   
-  public String toString() {
-    String string = "Dummy Action";
-    return string;
+  public int getOrderedQuantity(){
+      return orderedQuantity; 
+  }
+  
+  public void setOrderedQuantity(int newQuantity){
+      orderedQuantity = newQuantity;
+  }
+  
+  public String toString(){
+      String string = "OID: " + id + " | Ordered By:  " + client.getName() + " (" + client.getId()   
+                      + ") | Product (PID: " + product.getId() + "): " + product.getName() 
+                      + " | OrderedQty: " + orderedQuantity + " | Totalcost: $" + totalCost;
+      return string;
   }
 }

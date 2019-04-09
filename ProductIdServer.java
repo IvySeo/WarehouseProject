@@ -1,3 +1,6 @@
+//Author: Vachia
+//Stage 1
+
 import java.io.*;
 public class ProductIdServer implements Serializable {
   private int idCounter;

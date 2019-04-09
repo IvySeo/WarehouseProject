@@ -10,16 +10,16 @@ public class Warehouse implements Serializable {
   private ManufacturerList manufacturerList;
   private ClientList clientList;
   private WaitList waitList;
-  private OrderList orderList;
-  private ManufacturerOrderList manufacturerOrderList;
-
+  private ShipmentList shipmentList;
   private static Warehouse warehouse;
+  
 
   private Warehouse() {
     productList = productList.instance();
     manufacturerList = manufacturerList.instance();
     clientList = clientList.instance();
     waitList = waitList.instance();
+    shipmentList = shipmentList.instance();
   }
 
   public static Warehouse instance() {
@@ -28,7 +28,7 @@ public class Warehouse implements Serializable {
       ClientIdServer.instance();
       ManufacturerIdServer.instance();
       OrderIdServer.instance();
-      ManufacturerOrderIdServer.instance();
+      ShipmentIdServer.instance();
       return (warehouse = new Warehouse());
     } else {
       return warehouse;
@@ -51,7 +51,7 @@ public class Warehouse implements Serializable {
     return null;
   }
 
-  public Product addProduct(String name, int quantity, float price) {
+  public Product addProduct(String name, int quantity, double price) {
     Product product = new Product(name, quantity, price);
     if (productList.insertProduct(product)) {
       return (product);
@@ -59,45 +59,59 @@ public class Warehouse implements Serializable {
     return null;
   }
 
-  //Assigning and Un-assigning Product Functions
-  public boolean assignProductToManufacturer (String productID, String manufacturerID, float price)
+  public boolean assignProductToManufacturer (String productID, String manufacturerID)
   {
-	Manufacturer mfct = manufacturerList.search(manufacturerID);
-	Product prdct = productList.search(productID);
-	
-    if(mfct != null && prdct != null){
-    	SuppliedProduct spl_prdct = new SuppliedProduct(mfct, prdct, price);
-    	
-        mfct.assignProduct(spl_prdct);
-        prdct.assignSuppliedProduct(spl_prdct);
-        return true;
+    Manufacturer manufacturer = manufacturerList.search(manufacturerID);
+    Product product = productList.search(productID);
+    if(manufacturer != null && product != null){
+        Iterator result = manufacturer.getProvidedProducts();
+        
+        boolean flag = false;
+        while(result.hasNext()){
+            Product temp = (Product)(result.next());
+            if(temp.getId().equals(productID)){
+                flag = true;
+                break;
+            }
+        }
+        
+        if(flag == false){
+            manufacturer.assignProduct(product);
+            product.assignManufacturer(manufacturer);
+            return true;
+        }
     }
     return false;
   }
 
   public boolean unassignProductToManufacturer (String productID, String manufacturerID)
   {
-	Manufacturer mfct = manufacturerList.search(manufacturerID);
-	Product prdct = productList.search(productID);
-	
-	  
-    if(mfct != null && prdct != null){
-    	SuppliedProduct spl_prdct = mfct.search(productID);
-    	
-    	if(spl_prdct != null)
-    	{
-    		mfct.unassignProduct(spl_prdct);
-        	prdct.unassignSuppliedProduct(spl_prdct);
-        	
-        	spl_prdct = null;
-        	
-        	return true;
-    	}
+    Manufacturer manufacturer = manufacturerList.search(manufacturerID);
+    Product product = productList.search(productID);
+    if(manufacturer != null && product != null){
+        Iterator result = manufacturer.getProvidedProducts();
+        if(result == null){
+            return false;
+        }
+        
+        boolean flag = false;
+        while(result.hasNext()){
+            Product temp = (Product)(result.next());
+            if(temp.getId().equals(productID)){
+                flag = true;
+                break;
+            }
+        }
+        
+        if(flag == true){
+            manufacturer.unassignProduct(product);
+            product.unassignManufacturer(manufacturer);
+            return true;
+        }
     }
     return false;
   }
 
-  //List Getters
   public Iterator getClients() {
       return clientList.getClients();
   }
@@ -109,16 +123,11 @@ public class Warehouse implements Serializable {
   public Iterator<Product> getProducts() {
       return productList.getProducts();
   }
-  
-  public Iterator getWaitList() {
-	  return waitList.getOrders();
-  }
 
-  public Iterator getSuppliersForProduct(String ProductID){
-      if(productList.search(ProductID) != null){
-          return (productList.search(ProductID)).getProviders();
+  public Iterator getSuppliersForProduct(String productID){
+      if(productList.search(productID) != null){
+          return (productList.search(productID)).getProviders();
       }
-
       return null;
   }
 
@@ -126,223 +135,159 @@ public class Warehouse implements Serializable {
       if(manufacturerList.search(ManufacturerID) != null){
           return (manufacturerList.search(ManufacturerID)).getProvidedProducts();
       }
-
       return null;
   }
 
-
   //Stage 2
-  public Order createOrder(String clnt_id)
-  {
-	 Client clnt = clientList.search(clnt_id);
-	 
-	 if(clnt != null)
-	 {
-		 Order ord = new Order(clnt);
-		 
-		 clnt.addOrder(ord);
-		 orderList.insertOrder(ord);
-		 return ord;
-	 }
-	 return null;
+  public boolean addAndProcessOrder(String cid, String pid, int quantity){
+      Client client = clientList.search(cid);
+      Product product = productList.search(pid);
+      
+      if(product == null){
+          return false;
+      }
+      
+      //Create order
+      Order order = new Order(client, product, quantity);
+      
+      //Check if enough is in stock
+      if(product.getQuantity() >= quantity){
+          //Put order on invoice
+          double cost = product.getSalesPrice() * quantity;
+          client.addToInvoice(order, cost);
+          client.setBalance((cost + client.getBalance()));
+          
+          //Subtract from inventory
+          productList.search(product.getId()).setQuantity((product.getQuantity() - quantity));
+          System.out.println(pid + ": PRODUCT FULFILLED AND INVOICED | UPDATED CLIENT BALANCE: $" + client.getBalance());
+      }
+      else
+      {
+          //Put order on waitlist
+          waitList.insertOrder(order);
+          System.out.println(product.getId() + ": PRODUCT PUT ON WAITLIST");
+      }
+      return true;
   }
-  
-  public boolean processOrder(Order ord)
+
+  public void placeOrderWithManufacturer(Shipment shipment)
   {
-		Iterator ord_prd_iterator = ord.getOrderedProducts();
-		
-		//Check if all orderedproducts are in stock in inventory
-		while (ord_prd_iterator.hasNext())
-		{
-			OrderedProduct ord_prd = (OrderedProduct)ord_prd_iterator.next();
-
-    		Product prd_toCheckQtyFor = ord_prd.getProduct();
-
-			if(prd_toCheckQtyFor.getQuantity() < ord_prd.getQuantity())
-			{
-				//If any one orderedproduct cant be fulfilled, put order on waitlist immediately.
-				waitList.insertOrder(ord);
-				
-				return false;
-			}
-		}
-		
-		//Fulfill Order
-		Iterator ord_prd_iterator_fulfill = ord.getOrderedProducts();
-		while (ord_prd_iterator.hasNext())
-		{
-			OrderedProduct ord_prd = (OrderedProduct)ord_prd_iterator.next();
-
-    		Product prd_inInventory = ord_prd.getProduct();
-
-			prd_inInventory.deductQuantity(ord_prd.getQuantity());
-			
-			//Possibly update order object?
-		}
-		
-		
-		return true;
+      shipmentList.insertShipment(shipment);
   }
+
+  public double acceptClientPayment(String cid, double payment)
+  {
+      double newBalance = (clientList.search(cid)).getBalance() - payment;
+      (clientList.search(cid)).setBalance(newBalance);
+      return newBalance;
+  }
+
   
-    public boolean placeOrderWithManufacturer(String mfct_ID, String prd_ID, int qty)
-    {
-        Manufacturer mfct = manufacturerList.search(mfct_ID);
-        Product prdct = productList.search(prd_ID);
-
-        
-        if(mfct != null && prdct != null)
-        {
-            SuppliedProduct spl_prd = mfct.search(prd_ID);
-        	
-            if(spl_prd != null)
-            {
-	        	ManufacturerOrder mfct_ord = new ManufacturerOrder(mfct);
-	        	
-	        	mfct_ord.addProductToOrder(prdct, qty);
-	        	
-	        	mfct_ord.calculateTotalCost(spl_prd);
-	        	
-	        	mfct.addOrder(mfct_ord);
-	        	
-	        	manufacturerOrderList.insertManufacturerOrder(mfct_ord);
-	        	
-	        	return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean acceptClientPayment(String clnt_ID, String ord_ID, float payment)
-    {
-        Client clnt = clientList.search(clnt_ID);
-        
-        if(clnt != null) {
-        	
-        	Order ord = clnt.search(ord_ID);
-        	
-        	if (ord != null)
-        	{
-        		Invoice inv = ord.getInvoice();
-        		
-        		if (inv != null)
-        		{
-        			inv.UpdateBalance(payment);
-        			
-        			return true;
-        		}
-        	}
-        }
-        return false;
-    }
-
-    //Stage 3
-    public boolean canFulfill_OrderedProduct(OrderedProduct ord_prd, ManufacturerOrder mOrder)
-    {
-    	//Check manufacturerOrder OR product list for enough quantity to fulfill orderedproduct in order.
-    	ShippedProduct shp_prd = mOrder.getProductsInOrder();
-    	if(shp_prd != null)
-    	{
-    		Product prd_inMOrder = shp_prd.getProduct();
-
-    		Product prd_toCheckQtyFor = ord_prd.getProduct();
-    		
-    		if(prd_inMOrder == prd_toCheckQtyFor)
-    		{
-    			if(shp_prd.getQuantity() >= ord_prd.getQuantity())
-    			{
-    				return true;
-    			}
-    		}
-    		else
-    		{
-    			if(prd_toCheckQtyFor.getQuantity() >= ord_prd.getQuantity())
-    			{
-    				return true;
-    			}
-    		}
-    		
-    	}
-    	return false;
-    	
-    }
-    
-    //ensure EVERY orderedproduct CAN BE FULFILLED before calling. See above function.
-    public Order fulfillOrder(Order ord, ManufacturerOrder mfct_ord)
-    {
-    	//Remove order from waitlist
-    	waitList.removeOrder(ord);
-    	
-    	//deduct quantity of each orderedproduct from Morder or Product List
-    	Iterator ord_prd_iterator = ord.getOrderedProducts();
-    	
-    	while (ord_prd_iterator.hasNext())
-    	{
-    		OrderedProduct ord_prd = (OrderedProduct)ord_prd_iterator.next();
-    		
-	    	ShippedProduct shp_prd = mfct_ord.getProductsInOrder();
-	    	if(shp_prd != null)
-	    	{
-	    		Product prd_inMOrder = shp_prd.getProduct();
-	
-	    		Product prd_toCheckQtyFor = ord_prd.getProduct();
-	    		
-	    		if(prd_inMOrder == prd_toCheckQtyFor)
-	    		{
-	    			if(shp_prd.getQuantity() >= ord_prd.getQuantity())
-	    			{
-	    				shp_prd.deductQuantity(ord_prd.getQuantity());
-	    			}
-	    		}
-	    		else
-	    		{
-	    			if(prd_toCheckQtyFor.getQuantity() >= ord_prd.getQuantity())
-	    			{
-	    				prd_toCheckQtyFor.deductQuantity(ord_prd.getQuantity());
-	    			}
-	    		}  		
-	    	}
-    	}
-    	return ord;
-    }
-    
-    public boolean addRemaining_ShippedProduct(ManufacturerOrder mfct_ord)
-    {
-    	//Add Remaining shipped product (if any) to product in product List
-    	ShippedProduct shp_prd = mfct_ord.getProductsInOrder();
-    	
-    	if(shp_prd != null)
-    	{
-    		if (shp_prd.getQuantity() > 0)
-    		{
-    			shp_prd.getProduct().addQuantity(shp_prd.getQuantity());
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    //Search Functions
-    public Client searchClient(String id)
-    {
-        if(clientList.search(id) != null)
-        {
-            return (clientList.search(id));
-        }
-
-        return null;
-    }
-
-    public Product searchProduct(String id)
-    {
-        if(productList.search(id) != null)
-        {
-            return (productList.search(id));
-        }
-
-        return null;
-    }
+  public Iterator getWaitListedOrdersForClient(String cid){
+      if(clientList.search(cid) != null){
+          return waitList.getOrders();
+      }
+      return null;
+  }
  
-   //Save and Load Functions
+  public Iterator getWaitListedOrdersForProduct(String pid){
+      if(productList.search(pid) != null){
+          return waitList.getOrders();
+      }
+      return null;
+  }
+  
+  public Iterator getOrdersPlacedWithManufacturer(){
+      return shipmentList.getShipments();
+  }
+  
+  //Stage 3: Recieving a shipment
+  public void receiveShipment(String sid)
+  {
+      //Check to see if shipment exists
+      if(shipmentList.search(sid) == null){
+          System.out.println("No Data for: " + sid);
+          return;
+      }
+      
+      //Obtain products for a particular order from shipmentList
+      Iterator shipmentProducts = (shipmentList.search(sid)).getProducts();
+      
+      while(shipmentProducts.hasNext()){
+          ManufacturerOrder m_order = (ManufacturerOrder)(shipmentProducts.next());
+          String s_pid = m_order.getProduct().getId();
+          int s_quantity = m_order.getOrderedQuantity() + (productList.search(s_pid)).getQuantity();
+          
+          //Obtain orders from waitlist
+          Iterator waitListOrders = waitList.getOrders();
+          
+          
+          /* False if shipment product does not fulfill waitlisted product. 
+           * True if shipment product fulfills waitlisted item
+          */
+          boolean fulfilled = false;
+          
+          //Iterate through waitList
+          while(waitListOrders.hasNext()){
+              //Obtain an order from waitList
+              Order order = (Order)(waitListOrders.next());
+              
+              String w_pid = order.getProduct().getId();
+              int w_quantity = order.getOrderedQuantity();
+              
+              //if shipment product does exists on waitList
+              if(s_pid.equals(w_pid)){
+                  
+                  //If waitListed product can be fullfilled
+                  if(s_quantity >= w_quantity){
+                      //Add product to client's invoice
+                      Client client = clientList.search(order.getClient().getId());
+                      double cost = m_order.getProduct().getSalesPrice()* w_quantity;
+                      client.addToInvoice(order, cost);
+                      client.setBalance((cost + client.getBalance()));
+                  
+                      System.out.println("FULFILLING WAITLISTED ITEM: " + order.toString());
+                      
+                      s_quantity = s_quantity - w_quantity;
+                      
+                      //Remove order from waitList
+                      waitListOrders.remove();
+                      fulfilled = true;
+                  }
+              }
+          }
+          
+          if(fulfilled == false){
+              System.out.println("(PID: " + s_pid + ") DID NOT FULFILL A WAITLISTED ITEM, ADDING TO INVENTORY");
+          }
+          
+          productList.search(s_pid).setQuantity((s_quantity));
+      }
+      
+      //Deletes shipment from shipmentList since shipment has been received
+      shipmentList.removeShipment(shipmentList.search(sid));
+  }
+  
+  public Iterator getShipment(String sid){
+      if(shipmentList.search(sid) != null){
+          return shipmentList.search(sid).getProducts();
+      }
+      return null;
+  }
+
+  public Client searchClient(String id){
+      return (clientList.search(id));
+  }
+
+  public Product searchProduct(String id){
+      return (productList.search(id));
+  }
+  
+  public Manufacturer searchManufacturer(String id){
+      return (manufacturerList.search(id));
+  }
+    
+
   public static Warehouse retrieve() {
     try {
       FileInputStream file = new FileInputStream("WarehouseData");
@@ -352,7 +297,7 @@ public class Warehouse implements Serializable {
       ManufacturerIdServer.retrieve(input);
       ClientIdServer.retrieve(input);
       OrderIdServer.retrieve(input);
-      ManufacturerOrderIdServer.retrieve(input);
+      ShipmentIdServer.retrieve(input);
       return warehouse;
     } catch(IOException ioe) {
       ioe.printStackTrace();
@@ -372,7 +317,7 @@ public class Warehouse implements Serializable {
       output.writeObject(ManufacturerIdServer.instance());
       output.writeObject(ClientIdServer.instance());
       output.writeObject(OrderIdServer.instance());
-      output.writeObject(ManufacturerOrderIdServer.instance());
+      output.writeObject(ShipmentIdServer.instance());
       return true;
     } catch(IOException ioe) {
       ioe.printStackTrace();

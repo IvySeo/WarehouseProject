@@ -1,3 +1,6 @@
+//Author: Sumaira Shahzad
+//Stage 1
+
 import java.util.*;
 import java.lang.*;
 import java.io.*;
@@ -7,6 +10,7 @@ public class ProductList implements Serializable {
   private static  ProductList productList;
   private ProductList() {
   }
+  
   public static ProductList instance() {
     if (productList == null) {
       return (productList = new ProductList());
@@ -20,8 +24,7 @@ public class ProductList implements Serializable {
     return true;
   }
 
-   public Product search(String id) {
-
+  public Product search(String id) {
     Iterator allProducts = getProducts();
     while(allProducts.hasNext()){
         Product product = (Product)(allProducts.next());
@@ -37,6 +40,7 @@ public class ProductList implements Serializable {
   public Iterator getProducts() {
     return products.iterator();
   }
+  
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
@@ -45,6 +49,7 @@ public class ProductList implements Serializable {
       System.out.println(ioe);
     }
   }
+  
   private void readObject(java.io.ObjectInputStream input) {
     try {
       if (productList != null) {

@@ -1,6 +1,6 @@
-// author: Ivy
-// state: final
-import java.io.Serializable;
+// Author: Ivy Seo 
+// Stage 1
+
 import java.util.*;
 import java.io.*;
 
@@ -22,13 +22,24 @@ public class ClientList implements Serializable {
     }
   }
 
-}
-
   public boolean insertClient(Client client) {
-    return clients.add(client);
+    clients.add(client);
+    return true;
+  }
+  
+  public Client search(String id){
+      Iterator allClients = getClients();
+      while(allClients.hasNext()){
+          Client client = (Client)(allClients.next());
+          
+          if(client.getId().equals(id)){
+              return client;
+          }
+      }
+      return null;
   }
 
-  public Iterator getClient(){
+  public Iterator getClients(){
      return clients.iterator();
   }
   
@@ -41,6 +52,7 @@ public class ClientList implements Serializable {
       ioe.printStackTrace();
     }
   }
+  
   private void readObject(java.io.ObjectInputStream input) {
     try {
       if (clientList != null) {
@@ -61,6 +73,7 @@ public class ClientList implements Serializable {
       cnfe.printStackTrace();
     }
   }
+  
   public String toString() {
     return clients.toString();
   }

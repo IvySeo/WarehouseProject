@@ -5,34 +5,37 @@ import java.io.*;
 public class Shipment implements Serializable{
     private static final long serialVersionUID = 1L;
     private Manufacturer manufacturer;
-    private Product product;
-    private float supplierPrice;
+    private List orderedProducts = new LinkedList();
+    private double supplierPrice;
+    private String id;
+    private static final String SHIPMENT_STRING = "S";
     
-    public Shipment(Manufacturer manufacturer, Product product, float supplierPrice){
+    public Shipment(Manufacturer manufacturer){
         this.manufacturer = manufacturer;
-        this.product = product;
-        this.supplierPrice = supplierPrice;
+        id = SHIPMENT_STRING + (ShipmentIdServer.instance()).getId();
     }
     
     public Manufacturer getManufacturer() {
         return manufacturer;
     }
     
-    public Product getProduct() {
-        return product;
+    public void addProduct(ManufacturerOrder o){
+        orderedProducts.add(o);
     }
     
-    public float getSupplierPrice() {
+    public String getId(){
+        return id;
+    }
+    
+    public Iterator getProducts(){
+        return orderedProducts.iterator();
+    }
+    
+    public double getSupplierPrice() {
         return supplierPrice;
     }
     
-    public void setSupplierPrice(float s) {
+    public void setSupplierPrice(double s) {
         supplierPrice = s;
-    }
-
-    public boolean recieveShipment(Product product)
-    {
-        products.add(product);
-        return true;
     }
 }

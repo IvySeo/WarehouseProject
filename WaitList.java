@@ -1,11 +1,14 @@
+
 import java.util.*;
 import java.io.*;
 public class WaitList implements Serializable {
   private static final long serialVersionUID = 1L;
   private List orders = new LinkedList();
   private static WaitList WaitList;
+  
   private WaitList() {
   }
+  
   public static WaitList instance() {
     if (WaitList == null) {
       return (WaitList = new WaitList());
@@ -17,6 +20,10 @@ public class WaitList implements Serializable {
   public boolean insertOrder(Order order) {
     orders.add(order);
     return true;
+  }
+  
+  public void removeOrder(Order order){
+      orders.remove(order);
   }
 
   public Iterator getOrders(){
@@ -31,6 +38,7 @@ public class WaitList implements Serializable {
       ioe.printStackTrace();
     }
   }
+  
   private void readObject(java.io.ObjectInputStream input) {
     try {
       if (WaitList != null) {
@@ -49,6 +57,7 @@ public class WaitList implements Serializable {
       cnfe.printStackTrace();
     }
   }
+  
   public String toString() {
     return orders.toString();
   }

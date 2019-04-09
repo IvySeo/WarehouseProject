@@ -1,3 +1,6 @@
+//Author: Vachia Thoj
+//Stage 1
+
 import java.io.*;
 public class ManufacturerIdServer implements Serializable {
   private int idCounter;
@@ -17,6 +20,7 @@ public class ManufacturerIdServer implements Serializable {
   public int getId() {
     return idCounter++;
   }
+  
   public String toString() {
     return ("IdServer" + idCounter);
   }

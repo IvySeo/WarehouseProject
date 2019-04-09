@@ -1,51 +1,47 @@
 import java.util.*;
 import java.io.*;
-public class ManufacturerOrder implements Serializable {
-  private static final long serialVersionUID = 1L;
 
-  private Manufacturer supplier;
-  private String id;
-  private static final String MFCTR_ORDER_STRING = "MO";
-  private ShippedProduct shippedProducts;
-  private float totalCost;
-  
-  public  ManufacturerOrder (Manufacturer supplier) {
-    this.supplier = supplier;
-    id = MFCTR_ORDER_STRING + (ManufacturerOrderIdServer.instance()).getId();
-  }
+public class ManufacturerOrder implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    private double totalCost = 0.0;
+    private int orderedQuantity;
+    private Product product;
+    
+    /**
+     * Constructor for objects of class ManufacturerOrder
+     */
+    public ManufacturerOrder(Product p, int quantity)
+    {
+        this.product = p;
+        this.orderedQuantity = quantity;
+        
+        this.totalCost = p.getSalesPrice() * quantity;
+    }
 
-  public Manufacturer getManufacturer() {
-    return supplier;
-  }
-  
-  public void addProductToOrder(Product product, int qty) {
-	  ShippedProduct prdct_toAdd = new ShippedProduct(this, product, qty);
-	  shippedProducts = prdct_toAdd;
-  }
-  
-  public float getTotalCost()
-  {
-	  return totalCost;
-	  
-  }
-  
-  public float calculateTotalCost(SuppliedProduct spl_prd)
-  {
-	  if(shippedProducts != null)
-	  {
-		  totalCost = spl_prd.getSupplyPrice() * shippedProducts.getQuantity();
-	  }
-	  return totalCost;
-  }
-  
-  public ShippedProduct getProductsInOrder() {
-    return shippedProducts;
-  }
-  
-  public String toString(){
-	  String string = "Manufacturer Order ID: " + id + " | Supplier: " + supplier.toString() + "| Total Cost: $" + totalCost;
-	  
-	  return string;
-  }
-	
+    public double getTotalCost(){
+        return totalCost;
+    }
+    
+    public Product getProduct(){
+        return product;
+    }
+    
+    public int getOrderedQuantity(){
+        return orderedQuantity;
+    }
+    
+    public void setOrderedQuantity(int amount){
+        orderedQuantity = amount;
+    }
+    
+    public void setTotalCost(double newCost){
+        totalCost = newCost;
+    }
+    
+    public String toString(){
+        String string = "Product (PID: " + product.getId() + "): | " + product.getName() + " | OrderedQty: "
+                        + orderedQuantity + " | TotalCost $" + totalCost;
+        return string;
+    }
 }
